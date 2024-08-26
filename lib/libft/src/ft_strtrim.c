@@ -60,11 +60,7 @@ char	*ft_strtrim(char const *s1, char const *set)
 	start_i = start(s1, set);
 	end_i = end(s1, set);
 	if (start_i > end_i)
-	{
-		result = malloc(1);
-		result[0] = 0;
-		return (result);
-	}
+		return (NULL);
 	result = (char *)malloc(sizeof(char) * (end_i - start_i + 2));
 	if (!result)
 		return (NULL);
@@ -76,5 +72,6 @@ char	*ft_strtrim(char const *s1, char const *set)
 		start_i++;
 	}
 	result[j] = 0;
+	free(s1);
 	return (result);
 }
