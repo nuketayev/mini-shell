@@ -7,6 +7,6 @@ void	execute()
 	id = fork();
 	if (id == 0)
 	{
-		execve()
+		execve();
 	}
 }

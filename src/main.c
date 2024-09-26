@@ -23,10 +23,21 @@ void	free_split(char **split_line)
 
 int	main(void)
 {
+	int    *status;
 	char	*line;
 	char	**split_line;
 	int		i;
 
+	status = malloc(sizeof(int) * 3);
+	status[0] = COMMAND;
+	status[1] = R_INPUT;
+	status[2] = END;
+	i = 0;
+	while (status[i] != END)
+	{
+        printf("%i\n", status[i]);
+        i++;
+    }
 	signal(SIGQUIT, SIG_IGN);
 	signal(SIGINT, SIG_IGN);
 	while (1)

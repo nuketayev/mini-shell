@@ -9,6 +9,14 @@
 # include <readline/history.h>
 # include "../lib/libft/inc/libft.h"
 
+typedef enum e_status
+{
+    END,
+    COMMAND,
+    R_INPUT,
+    R_OUTPUT
+}	t_status;
+
 char	**ft_split_str(char *line);
 
 #endif

@@ -3,7 +3,7 @@ CFLAGS = -c
 
 LIBFT = lib/libft
 LIB = $(LIBFT)/libft.a
-SOURCES = src/main.c src/parse_input.c src/execute.c
+SOURCES = src/main.c src/parse_input.c
 
 OBJECTS = ${SOURCES:.c=.o}
 HEADERS = -I ../inc
