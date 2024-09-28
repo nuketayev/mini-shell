@@ -1,4 +1,4 @@
-NAME = minishell
+NAME = minipipi:
 CFLAGS = -c
 
 LIBFT = lib/libft
