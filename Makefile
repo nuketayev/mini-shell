@@ -1,4 +1,4 @@
-NAME = minishell
+NAME = minishella
 CFLAGS = -c
 
 LIBFT = lib/libft
