@@ -21,7 +21,7 @@ void	free_split(char **split_line)
 	free(split_line);
 }
 
-int	main(void)
+int	main(int _argc, char *_argv[], char *envp[])
 {
 	int    *status;
 	char	*line;
@@ -52,13 +52,8 @@ int	main(void)
 		line = readline("$ ");
 		if (line == NULL)
 			break ;
-		split_line = ft_split_str(line);
-		while (split_line[i])
-		{
-			ft_printf("%s\n", split_line[i]);
-			i++;
-		}
-		free_split(split_line);
+		pipex(line, envp);
+		wait(0);
 	}
 	return (0);
 }
