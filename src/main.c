@@ -21,12 +21,24 @@ void	free_split(char **split_line)
 	free(split_line);
 }
 
+int	ft_splitlen(char *arr[])
+{
+	int	len;
+	if (!arr)
+		return (0);
+	len = 0;
+	while (arr[len])
+		len++;
+	return (len);
+}
+
 int	main(int _argc, char *_argv[], char *envp[])
 {
 	int    *status;
 	char	*line;
 	char	**split_line;
 	int		i;
+	int		split_len;
 
 	status = malloc(sizeof(int) * 3);
 	status[0] = COMMAND;
@@ -52,7 +64,9 @@ int	main(int _argc, char *_argv[], char *envp[])
 		line = readline("$ ");
 		if (line == NULL)
 			break ;
-		pipex(line, envp);
+		split_line = ft_split(line, '|');
+		split_len = ft_splitlen(split_line);
+		pipex(split_len, split_line, envp);
 		wait(0);
 	}
 	return (0);

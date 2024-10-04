@@ -40,7 +40,8 @@ char	**get_path(char *envp[]);
 void	execute_last(t_program *program, char **envp, char *argv);
 void	open_files(t_program *program);
 int	get_command_path(char **envp, t_program *program, char *argv);
-void	pipex(char *arg, char *envp[]);
+void	pipex(int argc, char *argv[], char *envp[]);
+
 
 
 #endif
