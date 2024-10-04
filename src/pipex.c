@@ -53,27 +53,41 @@ void	execute_last(t_program *program, char **envp, char *argv)
 void	execute(t_program *program, char **envp, char *argv)
 {
 	int	id;
+	int	fd[2];
 
 	if (get_command_path(envp, program, argv) == -1)
 	{
 		ft_errprintf("/bin/sh: 1: %s: not found\n", argv);
 	}
+	pipe(fd);
 	id = fork();
 	if (id == -1)
 		free_and_exit(*program, "fork failed");
 	if (id == 0)
 	{
+		close(fd[0]);
+		dup2(fd[1], STDOUT_FILENO);
 		if (execve(program->command_path, program->command, envp) == -1)
 			free_and_exit(*program, "");
 	}
+	else
+	{
+		close(fd[1]);
+		dup2(fd[0], STDIN_FILENO);
+	}
 }
 
-void	pipex(char *arg, char *envp[])
+void	pipex(int argc, char *argv[], char *envp[])
 {
 	t_program	program;
 	int			i;
 
-	i = 2;
-	program = init_struct(1, arg);
-	execute(&program, envp, arg);
+	i = 0;
+	program = init_struct(1, argv[0]);
+	while (i < argc - 1)
+	{
+		execute(&program, envp, argv[i]);
+		i++;
+	}
+	execute_last(&program, envp, argv[argc - 1]);
 }
