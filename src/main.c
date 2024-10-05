@@ -64,10 +64,16 @@ int	main(int _argc, char *_argv[], char *envp[])
 		line = readline("$ ");
 		if (line == NULL)
 			break ;
-		split_line = ft_split(line, '|');
-		split_len = ft_splitlen(split_line);
-		pipex(split_len, split_line, envp);
-		wait(0);
+		if (*line != '\0')
+		{
+			add_history(line);
+			split_line = ft_split(line, '|');
+			split_len = ft_splitlen(split_line);
+			pipex(split_len, split_line, envp);
+			free_split(split_line);
+		}
+		free(line);
 	}
+	free(status);
 	return (0);
 }
