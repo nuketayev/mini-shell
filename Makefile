@@ -1,26 +1,27 @@
 NAME = minishell
 CFLAGS = -c
+LDFLAGS = -lreadline
 
 LIBFT = lib/libft
 LIB = $(LIBFT)/libft.a
-SOURCES = src/main.c src/parse_input.c src/pipex.c src/pipex_utils.c src/input_test.c
+SOURCES = src/main.c src/parse_input.c src/pipex.c src/pipex_utils.c
 
 OBJECTS = ${SOURCES:.c=.o}
-HEADERS = -I ../inc
+HEADERS = -I ../inc -I /usr/include/readline
 
-all: $(LIB) $(NAME)
+all: $(NAME)
 
 $(LIB):
 	@make -C $(LIBFT)
 
 $(NAME): $(OBJECTS) $(LIB)
-	@cc -lreadline -o $@ $^
+	@cc -o $@ $(OBJECTS) $(LIB) $(LDFLAGS)
 
 norm:
 	norminette $(SOURCES) inc/minishell.h
 
 %.o: %.c
-	@cc $(CFLAGS) -o $@ $< $(HEADERS)
+	@cc $(CFLAGS) $(HEADERS) -o $@ $<
 
 clean:
 	@rm -rf $(OBJECTS)
@@ -30,4 +31,3 @@ fclean: clean
 	@rm -rf $(NAME)
 
 re: fclean all
-
