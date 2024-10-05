@@ -50,7 +50,7 @@ static int	end(char const *s1, char const *set)
 	return (len);
 }
 
-char	*ft_strtrim(char const *s1, char const *set)
+char	*ft_strtrim(char *s1, char const *set)
 {
 	int		start_i;
 	int		end_i;

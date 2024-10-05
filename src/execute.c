@@ -1,6 +1,6 @@
 #include "../inc/minishell.h"
 
-void	execute()
+void	execute_not()
 {
 	int	id;
 

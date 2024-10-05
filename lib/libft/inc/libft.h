@@ -63,7 +63,7 @@ char	*ft_strjoin(char *s1, char *s2, int free_s1);
 void	*ft_calloc(size_t nmemb, size_t size);
 int		ft_findchar(const char *s, char c);
 char	*ft_strnstr(const char *big, const char *little, size_t len);
-char	*ft_strtrim(char const *s1, char const *set);
+char	*ft_strtrim(char *s1, char const *set);
 char	*ft_substr(char const *s, unsigned int start, size_t len);
 char	*ft_strmapi(char const *s, char (*f)(unsigned int, char));
 char	*ft_strchr(const char *s, int c);
