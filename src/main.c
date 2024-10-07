@@ -39,17 +39,8 @@ int	main(int _argc, char *_argv[], char *envp[])
 	char	**split_line;
 	int		i;
 	int		split_len;
+	int	id;
 
-	status = malloc(sizeof(int) * 3);
-	status[0] = COMMAND;
-	status[1] = R_INPUT;
-	status[2] = END;
-	i = 0;
-	while (status[i] != END)
-	{
-        printf("%i\n", status[i]);
-        i++;
-    }
 	signal(SIGQUIT, SIG_IGN);
 	signal(SIGINT, SIG_IGN);
 	while (1)
@@ -64,16 +55,16 @@ int	main(int _argc, char *_argv[], char *envp[])
 		line = readline("$ ");
 		if (line == NULL)
 			break ;
-		if (*line != '\0')
+		add_history(line);
+		id = fork();
+		if (id == 0)
 		{
-			add_history(line);
 			split_line = ft_split(line, '|');
 			split_len = ft_splitlen(split_line);
 			pipex(split_len, split_line, envp);
-			free_split(split_line);
 		}
+		waitpid(id, NULL, 0);
 		free(line);
 	}
-	free(status);
 	return (0);
 }
