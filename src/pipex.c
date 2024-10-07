@@ -46,8 +46,12 @@ void	execute_last(t_program *program, char **envp, char *argv)
 	if (id == -1)
 		free_and_exit(*program, "fork failed");
 	if (id == 0)
+	{
 		if (execve(program->command_path, program->command, envp) == -1)
 			free_and_exit(*program, "");
+	}
+	else
+		waitpid(id, NULL, 0);
 }
 
 void	execute(t_program *program, char **envp, char *argv)
@@ -90,4 +94,5 @@ void	pipex(int argc, char *argv[], char *envp[])
 		i++;
 	}
 	execute_last(&program, envp, argv[argc - 1]);
+	exit(0);
 }
