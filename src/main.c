@@ -2,10 +2,14 @@
 
 sig_atomic_t	g_sigint_received = 0;
 
+
 void	handler(int signum)
 {
 	if (signum == SIGINT)
+	{
 		g_sigint_received = 1;
+		ft_putstr_fd("\n$ ", 0);
+	}
 }
 
 void	free_split(char **split_line)
@@ -42,16 +46,10 @@ int	main(int _argc, char *_argv[], char *envp[])
 	int	id;
 
 	signal(SIGQUIT, SIG_IGN);
-	signal(SIGINT, SIG_IGN);
+	signal(SIGINT, &handler);
 	while (1)
 	{
 		i = 0;
-		if (g_sigint_received)
-		{
-			printf("\n");
-			g_sigint_received = 0;
-			continue ;
-		}
 		line = readline("$ ");
 		if (line == NULL)
 			break ;

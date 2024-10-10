@@ -1,4 +1,4 @@
-NAME = minipipi:
+NAME = minishell
 CFLAGS = -c
 LDFLAGS = -lreadline
 
@@ -14,8 +14,8 @@ all: $(NAME)
 $(LIB):
 	@make -C $(LIBFT)
 
-$(NAME): $(OBJECTS) $(LIB)
-	@cc -o $@ $(OBJECTS) $(LIB) $(LDFLAGS)
+$(NAME): $(OBJECTS) $(LIB) $(LDFLAGS)
+	@cc -o $@ $^
 
 norm:
 	norminette $(SOURCES) inc/minishell.h
