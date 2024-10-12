@@ -32,6 +32,7 @@ typedef struct s_program
     int		status;
 }	t_program;
 
+
 char	**ft_split_str(char *line);
 void	free_split(char **split_line);
 void	handler(int signum);

@@ -38,6 +38,7 @@ void	execute_last(t_program *program, char **envp, char *argv)
 {
 	int	id;
 
+	signal(SIGQUIT, &handler);
 	if (get_command_path(envp, program, argv) == -1)
 	{
 		ft_errprintf("/bin/sh: 1: %s: not found\n", argv);
@@ -45,6 +46,7 @@ void	execute_last(t_program *program, char **envp, char *argv)
 	id = fork();
 	if (id == -1)
 		free_and_exit(*program, "fork failed");
+	signal(SIGINT, &handler);
 	if (id == 0)
 	{
 		if (execve(program->command_path, program->command, envp) == -1)
