@@ -53,13 +53,16 @@ int	main(int _argc, char *_argv[], char *envp[])
 		line = readline("$ ");
 		if (line == NULL)
 			break ;
-		add_history(line);
+		if (strlen(line) > 0)
+			add_history(line);
 		id = fork();
 		if (id == 0)
 		{
 			split_line = ft_split(line, '|');
 			split_len = ft_splitlen(split_line);
 			pipex(split_len, split_line, envp);
+			free_split(split_line);
+			exit(0);
 		}
 		waitpid(id, NULL, 0);
 		free(line);
