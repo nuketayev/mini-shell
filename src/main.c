@@ -53,18 +53,24 @@ int	main(int _argc, char *_argv[], char *envp[])
 		line = readline("$ ");
 		if (line == NULL)
 			break ;
-		if (strlen(line) > 0)
-			add_history(line);
-		id = fork();
-		if (id == 0)
+		if (ft_strlen(line) > 0)
 		{
-			split_line = ft_split(line, '|');
-			split_len = ft_splitlen(split_line);
-			pipex(split_len, split_line, envp);
-			free_split(split_line);
-			exit(0);
+			add_history(line);
+			id = fork();
+			if (id == 0)
+			{
+				split_line = ft_split(line, '|');
+				split_len = ft_splitlen(split_line);
+				t_token **tokens = tokenize_input(line);
+				printf("$\n$ The value is %s\n$ The type is %d\n$\n", tokens[0]->value, tokens[0]->type);
+				process_tokens(tokens, envp);
+				// pipex(split_len, split_line, envp);
+				free_split(split_line);
+				//need to free tokens later
+				exit(0);
+			}
+			waitpid(id, NULL, 0);
 		}
-		waitpid(id, NULL, 0);
 		free(line);
 	}
 	return (0);
