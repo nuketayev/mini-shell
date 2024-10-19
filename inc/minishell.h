@@ -11,15 +11,22 @@
 # include <readline/history.h>
 # include "../lib/libft/inc/libft.h"
 
-typedef enum e_status
+typedef enum e_token_type
 {
-    END,
-    COMMAND,
-    R_INPUT,
-	HERE_DOC,
-    R_OUTPUT,
-	A_OUTPUT
-}	t_status;
+    TOKEN_END,
+    TOKEN_COMMAND,
+    TOKEN_R_INPUT,
+	TOKEN_HERE_DOC,
+    TOKEN_R_OUTPUT,
+	TOKEN_A_OUTPUT,
+    TOKEN_TEXT
+}	t_token_type;
+
+typedef struct s_token
+{
+    t_token_type type;
+    char *value;
+} t_token;
 
 typedef struct s_program
 {
@@ -43,6 +50,8 @@ void	execute_last(t_program *program, char **envp, char *argv);
 void	open_files(t_program *program);
 int	get_command_path(char **envp, t_program *program, char *argv);
 void	pipex(int argc, char *argv[], char *envp[]);
+t_token **tokenize_input(char *line);
+void process_tokens(t_token **tokens, char *envp[]);
 
 
 
