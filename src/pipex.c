@@ -125,90 +125,87 @@ void execute_command(char *envp[], char *command)
     exit(EXIT_FAILURE);
 }
 
-void process_tokens(t_token **tokens, char *envp[])
+void process_tokens(t_list *tokens, char *envp[])
 {
-    int i;
-
-	i = 0;
-    while (tokens[i])
+    while (tokens)
     {
-        if (tokens[i]->type == TOKEN_COMMAND)
+        if (((t_token *)tokens->content)->type == TOKEN_COMMAND)
         {
-            if (strcmp(tokens[i]->value, "echo") == 0)
+            if (strcmp(((t_token *)tokens->content)->value, "echo") == 0)
             {
                 printf("$ Its echo command sukkaa why not showing\n");
                 // Handle echo command
-                i++;
-                while (tokens[i] && tokens[i]->type == TOKEN_TEXT)
+                tokens = tokens->next;
+                while (tokens && ((t_token *)tokens->content)->type == TOKEN_TEXT)
                 {
-                    printf("$ %s", tokens[i]->value);
-                    i++;
+                    printf("$ %s", ((t_token *)tokens->content)->value);
+                	tokens = tokens->next;
                 }
                 printf("\n");
             }
-            else if (strcmp(tokens[i]->value, "cd") == 0)
+            else if (strcmp(((t_token *)tokens->content)->value, "cd") == 0)
             {
                 // Handle cd command
-                i++;
-                if (tokens[i] && tokens[i]->type == TOKEN_TEXT)
+            	tokens = tokens->next;
+                if (tokens && ((t_token *)tokens->content)->type == TOKEN_TEXT)
                 {
                     // Process cd argument
-                    i++;
+                	tokens = tokens->next;
                 }
             }
-            else if (strcmp(tokens[i]->value, "pwd") == 0)
+            else if (strcmp(((t_token *)tokens->content)->value, "pwd") == 0)
             {
                 // Handle pwd command
-				execute_command(envp, tokens[i]->value);
-                i++;
+				execute_command(envp, ((t_token *)tokens->content)->value);
+            	tokens = tokens->next;
             }
-            else if (strcmp(tokens[i]->value, "export") == 0)
+            else if (strcmp(((t_token *)tokens->content)->value, "export") == 0)
             {
                 // Handle export command
-				execute_command(envp, tokens[i]->value);
-                i++;
+				execute_command(envp, ((t_token *)tokens->content)->value);
+            	tokens = tokens->next;
             }
-            else if (strcmp(tokens[i]->value, "unset") == 0)
+            else if (strcmp(((t_token *)tokens->content)->value, "unset") == 0)
             {
                 // Handle unset command
-				execute_command(envp, tokens[i]->value);
-                i++;
+				execute_command(envp, ((t_token *)tokens->content)->value);
+            	tokens = tokens->next;
             }
-            else if (strcmp(tokens[i]->value, "env") == 0)
+            else if (strcmp(((t_token *)tokens->content)->value, "env") == 0)
             {
                 // Handle env command
-				execute_command(envp, tokens[i]->value);
-                i++;
+				execute_command(envp, ((t_token *)tokens->content)->value);
+            	tokens = tokens->next;
             }
-            else if (strcmp(tokens[i]->value, "exit") == 0)
+            else if (strcmp(((t_token *)tokens->content)->value, "exit") == 0)
             {
                 // Handle exit command
-				execute_command(envp, tokens[i]->value);
-                i++;
+				execute_command(envp, ((t_token *)tokens->content)->value);
+            	tokens = tokens->next;
             }
         }
-        else if (tokens[i]->type == TOKEN_TEXT)
+        else if (((t_token *)tokens->content)->type == TOKEN_TEXT)
         {
 			printf("$ executing..\n");
-            execute_command(envp, tokens[i]->value);
+            execute_command(envp, ((t_token *)tokens->content)->value);
         }
-        else if (tokens[i]->type == TOKEN_R_INPUT)
+        else if (((t_token *)tokens->content)->type == TOKEN_R_INPUT)
         {
             // Handle input redirection
         }
-        else if (tokens[i]->type == TOKEN_R_OUTPUT)
+        else if (((t_token *)tokens->content)->type == TOKEN_R_OUTPUT)
         {
             // Handle output redirection
         }
-        else if (tokens[i]->type == TOKEN_A_OUTPUT)
+        else if (((t_token *)tokens->content)->type == TOKEN_A_OUTPUT)
         {
             // Handle append output redirection
         }
-        else if (tokens[i]->type == TOKEN_HERE_DOC)
+        else if (((t_token *)tokens->content)->type == TOKEN_HERE_DOC)
         {
             // Handle here document
         }
-        i++;
+    	tokens = tokens->next;
     }
     // execute_last(&program, envp, tokens[i - 1]->value);
 }

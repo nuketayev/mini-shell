@@ -76,36 +76,31 @@ t_token *create_token(t_token_type type, char *value)
 	return (token);
 }
 
-t_token **tokenize_input(char *line)
+int	add_token_to_list(t_list **node, int index, int type, char *value)
 {
-	t_token **tokens = malloc(sizeof(t_token *) * (ft_strlen(line) + 1));
+	*node = ft_lstnew(create_token(type, value));
+	return index;
+}
+
+t_list	*tokenize_input(char *line)
+{
+	t_list	*root;
+	t_list	*new;
 	int index;
-	int token_index;
 
 	index = 0;
-	token_index = 0;
+	root = NULL;
+	new = NULL;
 	while (line[index])
 	{
 		if (line[index] == '<' && line[index + 1] == '<')
-		{
-			tokens[token_index] = create_token(TOKEN_HERE_DOC, ft_strdup("<<"));
-			index += 2;
-		}
+			index = add_token_to_list(&new, index + 2, TOKEN_HERE_DOC, ft_strdup("<<"));
 		else if (line[index] == '>' && line[index + 1] == '>')
-		{
-			tokens[token_index] = create_token(TOKEN_A_OUTPUT, ft_strdup(">>"));
-			index += 2;
-		}
+			index = add_token_to_list(&new, index + 2, TOKEN_A_OUTPUT, ft_strdup(">>"));
 		else if (line[index] == '<')
-		{
-			tokens[token_index] = create_token(TOKEN_R_INPUT, ft_strdup("<"));
-			index++;
-		}
+			index = add_token_to_list(&new, index + 1, TOKEN_R_INPUT, ft_strdup("<"));
 		else if (line[index] == '>')
-		{
-			tokens[token_index] = create_token(TOKEN_R_OUTPUT, ft_strdup(">"));
-			index++;
-		}
+			index = add_token_to_list(&new, index + 1, TOKEN_R_OUTPUT, ft_strdup(">"));
 		else if (!isspace(line[index]))
 		{
 			int start;
@@ -115,26 +110,20 @@ t_token **tokenize_input(char *line)
 			while (line[index] && !isspace(line[index]) && line[index] != '<' && line[index] != '>')
 				index++;
 			token_value = ft_substr(line, start, index - start);
-			if (strcmp(token_value, "echo") == 0)
-				tokens[token_index++] = create_token(TOKEN_COMMAND, token_value);
-			else if (strcmp(token_value, "cd") == 0)
-				tokens[token_index++] = create_token(TOKEN_COMMAND, token_value);
-			else if (strcmp(token_value, "pwd") == 0)
-				tokens[token_index++] = create_token(TOKEN_COMMAND, token_value);
-			else if (strcmp(token_value, "export") == 0)
-				tokens[token_index++] = create_token(TOKEN_COMMAND, token_value);
-			else if (strcmp(token_value, "unset") == 0)
-				tokens[token_index++] = create_token(TOKEN_COMMAND, token_value);
-			else if (strcmp(token_value, "env") == 0)
-				tokens[token_index++] = create_token(TOKEN_COMMAND, token_value);
-			else if (strcmp(token_value, "exit") == 0)
-				tokens[token_index++] = create_token(TOKEN_COMMAND, token_value);
+			if (strcmp(token_value, "echo") == 0 || strcmp(token_value, "cd") == 0 ||
+				strcmp(token_value, "pwd") == 0 || strcmp(token_value, "export") == 0 ||
+				strcmp(token_value, "unset") == 0 || strcmp(token_value, "env") == 0 ||
+				strcmp(token_value, "exit") == 0)
+				index = add_token_to_list(&new, index, TOKEN_COMMAND, token_value);
 			else
-				tokens[token_index++] = create_token(TOKEN_TEXT, token_value);
+				index = add_token_to_list(&new, index, TOKEN_TEXT, token_value);
 		}
-		else
+		else if (line[index])
 			index++;
+		if (!root)
+			root = new;
+		else
+			ft_lstadd_back(&root, new);
 	}
-	tokens[token_index] = NULL;
-	return (tokens);
+	return (root);
 }
