@@ -61,13 +61,7 @@ int	main(int _argc, char *_argv[], char *envp[])
 				split_line = ft_split(line, '|');
 				split_len = ft_splitlen(split_line);
 				t_list *tokens = tokenize_input(line);
-				while (tokens)
-				{
-					printf("$\n$ The value is %s\n$ The type is %d\n$\n", ((t_token *)tokens->content)->value, ((t_token *)tokens->content)->type);
-					tokens = tokens->next;
-				}
-				// process_tokens(tokens, envp);
-				// pipex(split_len, split_line, envp);
+				process_tokens(tokens, envp);
 				free_split(split_line);
 				//need to free tokens later
 				exit(0);

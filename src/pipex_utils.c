@@ -55,30 +55,25 @@ void	free_commands(t_program *program)
 		free(program->command_path);
 }
 
-int	get_command_path(char **envp, t_program *program, char *argv)
+char	*get_command_path(char **envp, char *argv)
 {
-	int		j;
+	int		i;
 	char	**path;
+	char	*real_path;
 
-	j = 0;
-	free_commands(program);
+	i = 0;
 	path = get_path(envp);
-	program->command = ft_split(argv, ' ');
-	if (!path || !program->command)
-		return (-1);
-	while (path[j])
+	while (path[i])
 	{
-		program->command_path = ft_strjoin(path[j],
-				program->command[0], 0);
-		if (access(program->command_path, X_OK) == 0)
+		real_path = ft_strjoin(path[i],
+				argv, 0);
+		if (access(real_path, X_OK) == 0)
 		{
 			free_split(path);
-			return (0);
+			return (real_path);
 		}
-		j++;
-		if (path[j])
-			free(program->command_path);
+		i++;
 	}
 	free_split(path);
-	return (-1);
+	return (NULL);
 }
