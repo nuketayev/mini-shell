@@ -19,7 +19,9 @@ typedef enum e_token_type
 	TOKEN_HERE_DOC,
     TOKEN_R_OUTPUT,
 	TOKEN_A_OUTPUT,
-    TOKEN_TEXT
+    TOKEN_TEXT,
+    TOKEN_LAST,
+    TOKEN_PIPE
 }	t_token_type;
 
 typedef struct s_token
@@ -49,7 +51,7 @@ char	**get_path(char *envp[]);
 void	execute_last(char **envp, char **args);
 void	open_files(t_program *program);
 char    *get_command_path(char **envp, char *argv);
-void	pipex(t_list **command, char *envp[]);
+void	pipex(t_list **command, char *envp[], int first);
 t_list  *tokenize_input(char *line);
 void process_tokens(t_list *tokens, char *envp[]);
 

@@ -56,16 +56,15 @@ int	main(int _argc, char *_argv[], char *envp[])
 		{
 			add_history(line);
 			id = fork();
+			split_line = ft_split(line, '|');
+			t_list *tokens = tokenize_input(line);
 			if (id == 0)
 			{
-				split_line = ft_split(line, '|');
-				split_len = ft_splitlen(split_line);
-				t_list *tokens = tokenize_input(line);
 				process_tokens(tokens, envp);
-				free_split(split_line);
 				//need to free tokens later
 				exit(0);
 			}
+			free_split(split_line);
 			waitpid(id, NULL, 0);
 		}
 		free(line);
