@@ -51,7 +51,7 @@ char	**get_path(char *envp[]);
 void	execute_last(char **envp, char **args);
 void	open_files(t_program *program);
 char    *get_command_path(char **envp, char *argv);
-void	pipex(t_list **command, char *envp[], int first);
+void	pipex(t_list **command, char *envp[], t_token_type *first);
 t_list  *tokenize_input(char *line);
 void process_tokens(t_list *tokens, char *envp[]);
 

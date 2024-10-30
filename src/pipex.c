@@ -47,7 +47,9 @@ void	execute_last(char **envp, char **args)
 			printf("nie dziala kurwa\n");
 	}
 	else
+	{
 		waitpid(id, NULL, 0);
+	}
 }
 
 void	execute(char **envp, char **args)
@@ -92,27 +94,19 @@ char	**ft_combine(t_list **command)
 	return args;
 }
 
-void	pipex(t_list **command, char *envp[], int first)
+void	pipex(t_list **command, char *envp[], t_token_type *first)
 {
-	int			i;
 	char		**args = ft_combine(command);
 
-	i = 0;
-	if (first == TOKEN_LAST)
+	if (*first == TOKEN_LAST)
+	{
 		execute_last(envp, args);
+	}
 	else
 		execute(envp, args);
-	exit(0);
+	free_split(args);
 }
 
-t_list	*find_next_token(t_list *command)
-{
-	while (((t_token *)command->content)->type == TOKEN_TEXT || ((t_token *)command->content)->type == TOKEN_LAST)
-	{
-		command = command->next;
-	}
-	return (command);
-}
 /// Here below is new code
 
 
@@ -147,7 +141,6 @@ t_list	*find_next_token(t_list *command)
 
 void process_tokens(t_list *tokens, char *envp[])
 {
-	int	id;
     while (((t_token *)tokens->content)->type != TOKEN_END)
     {
         if (((t_token *)tokens->content)->type == TOKEN_COMMAND)
@@ -206,33 +199,14 @@ void process_tokens(t_list *tokens, char *envp[])
         }
         else if (((t_token *)tokens->content)->type == TOKEN_TEXT || ((t_token *)tokens->content)->type == TOKEN_LAST)
         {
-        	id = fork();
-        	if (id == 0)
-        	{
-        		printf("$ executing..\n");
-        		pipex(&tokens, envp, ((t_token *)tokens->content)->type);
-        	}
-        	else
-        	{
-        		tokens = find_next_token(tokens);
-        		usleep(100000);
-        	}
+        	printf("$ executing..\n");
+        	pipex(&tokens, envp, &((t_token *)tokens->content)->type);
         }
         else if (((t_token *)tokens->content)->type == TOKEN_PIPE)
         {
-        	id = fork();
-        	if (id == 0)
-        	{
-        		tokens = tokens->next;
-        		printf("$ executing..............\n");
-        		pipex(&tokens, envp, ((t_token *)tokens->content)->type);
-        	}
-        	else
-        	{
-        		tokens = tokens->next;
-        		tokens = find_next_token(tokens);
-        	}
-
+        	tokens = tokens->next;
+        	printf("$ executing..............\n");
+        	pipex(&tokens, envp, &((t_token *)tokens->content)->type);
         }
         else if (((t_token *)tokens->content)->type == TOKEN_R_INPUT)
         {
