@@ -82,6 +82,25 @@ int	add_token_to_list(t_list **node, int index, int type, char *value)
 	return index;
 }
 
+t_list *finish_tokenizing(t_list *first)
+{
+	t_list *current;
+	current = first;
+	while (current)
+	{
+		if (((t_token *)current->content)->type == TOKEN_TEXT &&
+			(((t_token *)current->next->content)->type == TOKEN_END ||
+			((t_token *)current->next->content)->type == TOKEN_R_OUTPUT ||
+			((t_token *)current->next->content)->type == TOKEN_A_OUTPUT ||
+			((t_token *)current->next->content)->type == TOKEN_TEXT))
+		{
+			((t_token *)current->content)->type = TOKEN_LAST;
+			return (first);
+		}
+		current = current->next;
+	}
+}
+
 t_list	*tokenize_input(char *line)
 {
 	t_list	*root;
@@ -101,6 +120,8 @@ t_list	*tokenize_input(char *line)
 			index = add_token_to_list(&new, index + 1, TOKEN_R_INPUT, ft_strdup("<"));
 		else if (line[index] == '>')
 			index = add_token_to_list(&new, index + 1, TOKEN_R_OUTPUT, ft_strdup(">"));
+		else if (line[index] == '|')
+			index = add_token_to_list(&new, index + 1, TOKEN_PIPE, ft_strdup("|"));
 		else if (!isspace(line[index]))
 		{
 			int start;
@@ -125,5 +146,8 @@ t_list	*tokenize_input(char *line)
 		else
 			ft_lstadd_back(&root, new);
 	}
+	add_token_to_list(&new, 0, TOKEN_END, "");
+	ft_lstadd_back(&root, new);
+	root = finish_tokenizing(root);
 	return (root);
 }

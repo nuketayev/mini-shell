@@ -34,100 +34,114 @@ t_program	init_struct(int argc, char *argv)
 	return (program);
 }
 
-void	execute_last(t_program *program, char **envp, char *argv)
+void	execute_last(char **envp, char **args)
 {
 	int	id;
+	char	*cmd_path;
 
-	signal(SIGQUIT, &handler);
-	if (get_command_path(envp, program, argv) == -1)
-	{
-		ft_errprintf("/bin/sh: 1: %s: not found\n", argv);
-	}
+	cmd_path = get_command_path(envp, args[0]);
 	id = fork();
-	if (id == -1)
-		free_and_exit(*program, "fork failed");
-	signal(SIGINT, &handler);
 	if (id == 0)
 	{
-		if (execve(program->command_path, program->command, envp) == -1)
-			free_and_exit(*program, "");
+		if (execve(cmd_path, args, envp) == -1)
+			printf("nie dziala kurwa\n");
 	}
 	else
+	{
 		waitpid(id, NULL, 0);
+	}
 }
 
-void	execute(t_program *program, char **envp, char *argv)
+void	execute(char **envp, char **args)
 {
 	int	id;
 	int	fd[2];
+	char	*cmd_path;
 
-	if (get_command_path(envp, program, argv) == -1)
-	{
-		ft_errprintf("/bin/sh: 1: %s: not found\n", argv);
-	}
+	cmd_path = get_command_path(envp, args[0]);
 	pipe(fd);
 	id = fork();
-	if (id == -1)
-		free_and_exit(*program, "fork failed");
 	if (id == 0)
 	{
 		close(fd[0]);
 		dup2(fd[1], STDOUT_FILENO);
-		if (execve(program->command_path, program->command, envp) == -1)
-			free_and_exit(*program, "");
+		if (execve(cmd_path, args, envp) == -1)
+			printf("nie dziala kurwa\n");
+
 	}
 	else
 	{
 		close(fd[1]);
 		dup2(fd[0], STDIN_FILENO);
+		waitpid(id, NULL, 0);
 	}
 }
 
-void	pipex(int split_len, char *split_line[], char *envp[])
+char	**ft_combine(t_list **command)
 {
-	t_program	program;
-	int			i;
-	t_token **tokens;
+	char	**args;
+	int		i;
 
+	args = (char **)malloc(10);
 	i = 0;
-	program = init_struct(1, split_line[0]);
-	while (i < split_len - 1)
+	while (((t_token *)(*command)->content)->type == TOKEN_TEXT || ((t_token *)(*command)->content)->type == TOKEN_LAST)
 	{
-		execute(&program, envp, split_line[i]);
+		args[i] = ft_strdup(((t_token *)(*command)->content)->value);
 		i++;
+		*command = (*command)->next;
 	}
-	execute_last(&program, envp, split_line[split_len - 1]);
-	exit(0);
+	args[i] = NULL;
+	return args;
 }
+
+void	pipex(t_list **command, char *envp[], t_token_type *first)
+{
+	char		**args = ft_combine(command);
+
+	if (*first == TOKEN_LAST)
+	{
+		execute_last(envp, args);
+	}
+	else
+		execute(envp, args);
+	free_split(args);
+}
+
 /// Here below is new code
 
-void execute_command(char *envp[], char *command)
-{
-    char *argv[] = {command, NULL};
-    char *path = getenv("PATH");
-    char *full_path = NULL;
-    char *token = strtok(path, ":");
 
-    while (token != NULL)
-    {
-        full_path = malloc(strlen(token) + strlen(command) + 2);
-        if (!full_path)
-        {
-            perror("malloc");
-            exit(EXIT_FAILURE);
-        }
-        sprintf(full_path, "%s/%s", token, command);
-        execve(full_path, argv, envp);
-        free(full_path);
-        token = strtok(NULL, ":");
-    }
-    perror("execve");
-    exit(EXIT_FAILURE);
-}
+
+// void execute_command(char *envp[], t_list **command)
+// {
+//     char *argv[] = {command, NULL};
+//     char *path = getenv("PATH");
+//     char *full_path = NULL;
+//     char *token = strtok(path, ":");
+//
+// 	while (command && command)
+// 	{
+// 		printf("%s\n", ((t_token *)(*command)->content)->value);
+// 		command = &(*command)->next;
+// 	}
+//     // while (token != NULL)
+//     // {
+// 	   //  full_path = malloc(strlen(token) + strlen(command) + 2);
+// 	   //  if (!full_path)
+// 	   //  {
+// 		  //   perror("malloc");
+// 		  //   exit(EXIT_FAILURE);
+// 	   //  }
+// 	   //  sprintf(full_path, "%s/%s", token, command);
+// 	   //  execve(full_path, argv, envp);
+// 	   //  free(full_path);
+// 	   //  token = strtok(NULL, ":");
+//     // }
+//     exit(EXIT_FAILURE);
+// }
 
 void process_tokens(t_list *tokens, char *envp[])
 {
-    while (tokens)
+    while (((t_token *)tokens->content)->type != TOKEN_END)
     {
         if (((t_token *)tokens->content)->type == TOKEN_COMMAND)
         {
@@ -156,38 +170,43 @@ void process_tokens(t_list *tokens, char *envp[])
             else if (strcmp(((t_token *)tokens->content)->value, "pwd") == 0)
             {
                 // Handle pwd command
-				execute_command(envp, ((t_token *)tokens->content)->value);
-            	tokens = tokens->next;
+				pipex(&tokens, envp, 0);
             }
             else if (strcmp(((t_token *)tokens->content)->value, "export") == 0)
             {
                 // Handle export command
-				execute_command(envp, ((t_token *)tokens->content)->value);
+            	pipex(&tokens, envp, 0);
             	tokens = tokens->next;
             }
             else if (strcmp(((t_token *)tokens->content)->value, "unset") == 0)
             {
                 // Handle unset command
-				execute_command(envp, ((t_token *)tokens->content)->value);
+            	pipex(&tokens, envp, 0);
             	tokens = tokens->next;
             }
             else if (strcmp(((t_token *)tokens->content)->value, "env") == 0)
             {
                 // Handle env command
-				execute_command(envp, ((t_token *)tokens->content)->value);
+            	pipex(&tokens, envp, 0);
             	tokens = tokens->next;
             }
             else if (strcmp(((t_token *)tokens->content)->value, "exit") == 0)
             {
                 // Handle exit command
-				execute_command(envp, ((t_token *)tokens->content)->value);
+            	pipex(&tokens, envp, 0);
             	tokens = tokens->next;
             }
         }
-        else if (((t_token *)tokens->content)->type == TOKEN_TEXT)
+        else if (((t_token *)tokens->content)->type == TOKEN_TEXT || ((t_token *)tokens->content)->type == TOKEN_LAST)
         {
-			printf("$ executing..\n");
-            execute_command(envp, ((t_token *)tokens->content)->value);
+        	printf("$ executing..\n");
+        	pipex(&tokens, envp, &((t_token *)tokens->content)->type);
+        }
+        else if (((t_token *)tokens->content)->type == TOKEN_PIPE)
+        {
+        	tokens = tokens->next;
+        	printf("$ executing..............\n");
+        	pipex(&tokens, envp, &((t_token *)tokens->content)->type);
         }
         else if (((t_token *)tokens->content)->type == TOKEN_R_INPUT)
         {
@@ -205,7 +224,6 @@ void process_tokens(t_list *tokens, char *envp[])
         {
             // Handle here document
         }
-    	tokens = tokens->next;
     }
     // execute_last(&program, envp, tokens[i - 1]->value);
 }
