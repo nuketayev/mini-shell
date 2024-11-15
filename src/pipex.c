@@ -145,7 +145,7 @@ void process_tokens(t_list *tokens, char *envp[])
     {
         if (((t_token *)tokens->content)->type == TOKEN_COMMAND)
         {
-            if (strcmp(((t_token *)tokens->content)->value, "echo") == 0)
+            if (strcmp(((t_token *)tokens->content)->value, "echoa") == 0)
             {
                 printf("$ Its echo command sukkaa why not showing\n");
                 // Handle echo command

@@ -85,16 +85,21 @@ int	add_token_to_list(t_list **node, int index, int type, char *value)
 t_list *finish_tokenizing(t_list *first)
 {
 	t_list *current;
+	t_list	*last_cmd;
 	current = first;
+	last_cmd = NULL;
 	while (current)
 	{
-		if (((t_token *)current->content)->type == TOKEN_TEXT &&
-			(((t_token *)current->next->content)->type == TOKEN_END ||
-			((t_token *)current->next->content)->type == TOKEN_R_OUTPUT ||
-			((t_token *)current->next->content)->type == TOKEN_A_OUTPUT ||
-			((t_token *)current->next->content)->type == TOKEN_TEXT))
+		if (((t_token *)current->content)->type == TOKEN_TEXT)
+			last_cmd = current;
+		while (((t_token *)current->content)->type == TOKEN_TEXT)
+			current = current->next;
+		if (last_cmd &&
+			(((t_token *)current->content)->type == TOKEN_END ||
+			((t_token *)current->content)->type == TOKEN_R_OUTPUT ||
+			((t_token *)current->content)->type == TOKEN_A_OUTPUT))
 		{
-			((t_token *)current->content)->type = TOKEN_LAST;
+			((t_token *)last_cmd->content)->type = TOKEN_LAST;
 			return (first);
 		}
 		current = current->next;
@@ -131,7 +136,7 @@ t_list	*tokenize_input(char *line)
 			while (line[index] && !isspace(line[index]) && line[index] != '<' && line[index] != '>')
 				index++;
 			token_value = ft_substr(line, start, index - start);
-			if (strcmp(token_value, "echo") == 0 || strcmp(token_value, "cd") == 0 ||
+			if (strcmp(token_value, "echoa") == 0 || strcmp(token_value, "cd") == 0 ||
 				strcmp(token_value, "pwd") == 0 || strcmp(token_value, "export") == 0 ||
 				strcmp(token_value, "unset") == 0 || strcmp(token_value, "env") == 0 ||
 				strcmp(token_value, "exit") == 0)
