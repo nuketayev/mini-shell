@@ -88,6 +88,12 @@ t_list *finish_tokenizing(t_list *first)
 	t_list	*last_cmd;
 	current = first;
 	last_cmd = NULL;
+	if (((t_token *)current->content)->type == TOKEN_R_INPUT)
+	{
+		current = current->next;
+		if (current)
+			current = current->next;
+	}
 	while (current)
 	{
 		if (((t_token *)current->content)->type == TOKEN_TEXT)
@@ -104,6 +110,7 @@ t_list *finish_tokenizing(t_list *first)
 		}
 		current = current->next;
 	}
+	return (first);
 }
 
 t_list	*tokenize_input(char *line)

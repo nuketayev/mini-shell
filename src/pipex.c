@@ -107,37 +107,20 @@ void	pipex(t_list **command, char *envp[], t_token_type *first)
 	free_split(args);
 }
 
-/// Here below is new code
+int	handle_file(char *filename, t_token_type type)
+{
+	int	fd;
 
-
-
-// void execute_command(char *envp[], t_list **command)
-// {
-//     char *argv[] = {command, NULL};
-//     char *path = getenv("PATH");
-//     char *full_path = NULL;
-//     char *token = strtok(path, ":");
-//
-// 	while (command && command)
-// 	{
-// 		printf("%s\n", ((t_token *)(*command)->content)->value);
-// 		command = &(*command)->next;
-// 	}
-//     // while (token != NULL)
-//     // {
-// 	   //  full_path = malloc(strlen(token) + strlen(command) + 2);
-// 	   //  if (!full_path)
-// 	   //  {
-// 		  //   perror("malloc");
-// 		  //   exit(EXIT_FAILURE);
-// 	   //  }
-// 	   //  sprintf(full_path, "%s/%s", token, command);
-// 	   //  execve(full_path, argv, envp);
-// 	   //  free(full_path);
-// 	   //  token = strtok(NULL, ":");
-//     // }
-//     exit(EXIT_FAILURE);
-// }
+	fd = open(filename, O_RDONLY);
+	if (fd == -1)
+	{
+		ft_errprintf("wrong file kurwo\n");
+		return (-1);
+	}
+	dup2(fd, STDIN_FILENO);
+	close(fd);
+	return (0);
+}
 
 void process_tokens(t_list *tokens, char *envp[])
 {
@@ -210,7 +193,9 @@ void process_tokens(t_list *tokens, char *envp[])
         }
         else if (((t_token *)tokens->content)->type == TOKEN_R_INPUT)
         {
-            // Handle input redirection
+            if (handle_file(((t_token *)tokens->next->content)->value, TOKEN_R_INPUT) == -1)
+            	break;
+        	tokens = tokens->next->next;
         }
         else if (((t_token *)tokens->content)->type == TOKEN_R_OUTPUT)
         {
