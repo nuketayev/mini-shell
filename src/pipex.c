@@ -94,20 +94,7 @@ char	**ft_combine(t_list **command)
 	return args;
 }
 
-void	pipex(t_list **command, char *envp[], t_token_type *first)
-{
-	char		**args = ft_combine(command);
-
-	if (*first == TOKEN_LAST)
-	{
-		execute_last(envp, args);
-	}
-	else
-		execute(envp, args);
-	free_split(args);
-}
-
-int	handle_file(char *filename, t_token_type type)
+int	redirect_input(char *filename)
 {
 	int	fd;
 
@@ -121,6 +108,48 @@ int	handle_file(char *filename, t_token_type type)
 	close(fd);
 	return (0);
 }
+
+int	redirect_output(char *filename, t_token_type type)
+{
+	int	fd;
+
+	if (type == TOKEN_R_OUTPUT)
+		fd = open(filename, O_WRONLY | O_CREAT | O_TRUNC, 0666);
+	else
+		fd = open(filename, O_WRONLY | O_CREAT | O_APPEND, 0666);
+	if (fd == -1)
+	{
+		ft_errprintf("wrong file kurwo\n");
+		return (-1);
+	}
+	dup2(fd, STDOUT_FILENO);
+	return (fd);
+}
+
+void	pipex(t_list **command, char *envp[], t_token_type *first)
+{
+	char		**args = ft_combine(command);
+	int			fd;
+
+	fd = -1;
+	if (*first == TOKEN_LAST)
+	{
+		if (((t_token *)(*command)->content)->type == TOKEN_R_OUTPUT ||
+			((t_token *)(*command)->content)->type == TOKEN_A_OUTPUT)
+		{
+			fd = redirect_output(((t_token *)(*command)->next->content)->value, ((t_token *)(*command)->content)->type);
+			*command = (*command)->next->next;
+		}
+		execute_last(envp, args);
+	}
+	else
+		execute(envp, args);
+	if (fd != -1)
+		close(fd);
+	free_split(args);
+}
+
+
 
 int	get_another_line(char **line)
 {
@@ -247,7 +276,7 @@ void process_tokens(t_list *tokens, char *envp[])
         }
         else if (((t_token *)tokens->content)->type == TOKEN_R_INPUT)
         {
-            if (handle_file(((t_token *)tokens->next->content)->value, TOKEN_R_INPUT) == -1)
+            if (redirect_input(((t_token *)tokens->next->content)->value) == -1)
             	break;
         	tokens = tokens->next->next;
         }
