@@ -133,6 +133,7 @@ void	pipex(t_list **command, char *envp[], t_token_type *first)
 	char	**args;
 	int		fd;
 
+	signal(SIGINT, &handler_two);
 	args = ft_combine(command);
 	fd = -1;
 	if (*first == TOKEN_LAST)
