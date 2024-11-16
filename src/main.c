@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   main.c                                             :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: anuketay <anuketay@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2024/11/16 16:26:00 by anuketay          #+#    #+#             */
+/*   Updated: 2024/11/16 16:42:03 by anuketay         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "../inc/minishell.h"
 
 sig_atomic_t	g_sigint_received = 0;
@@ -49,9 +61,7 @@ int	main(int _argc, char *_argv[], char *envp[])
 {
 	int		*status;
 	char	*line;
-	char	**split_line;
 	int		i;
-	int		split_len;
 	int		id;
 	t_list	*tokens;
 
@@ -69,12 +79,6 @@ int	main(int _argc, char *_argv[], char *envp[])
 			id = fork();
 			if (id == 0)
 			{
-				for (t_list *temp = tokens; temp != NULL; temp = temp->next)
-				{
-					ft_errprintf("token: %s has type: %i\n",
-						((t_token *)temp->content)->value,
-						((t_token *)temp->content)->type);
-				}
 				process_tokens(tokens, envp);
 				exit(0);
 			}
@@ -85,3 +89,12 @@ int	main(int _argc, char *_argv[], char *envp[])
 	}
 	return (0);
 }
+
+/*				for (t_list *temp = tokens; temp != NULL; temp = temp->next)
+				{
+					ft_errprintf("token: %s has type: %i\n",
+						((t_token *)temp->content)->value,
+						((t_token *)temp->content)->type);
+				}
+				
+				*/

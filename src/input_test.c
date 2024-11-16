@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   input_test.c                                       :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: anuketay <anuketay@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2024/11/16 16:42:24 by anuketay          #+#    #+#             */
+/*   Updated: 2024/11/16 16:46:02 by anuketay         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "../inc/minishell.h"
 
 int	skip_spaces(char *line, int i)
@@ -46,10 +58,10 @@ int	get_process_count(char *line)
 
 int	main(void)
 {
-	char *line;
-	char **split_line;
-	int *process_list;
-	int process_count;
+	char	*line;
+	char	**split_line;
+	int		*process_list;
+	int		process_count;
 
 	while (1)
 	{
