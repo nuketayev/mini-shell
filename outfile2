@@ -1,2 +1,0 @@
-LIBFT = lib/libft
-LIB = $(LIBFT)/libft.a

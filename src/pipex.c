@@ -49,6 +49,7 @@ void	execute_last(char **envp, char **args)
 	else
 	{
 		waitpid(id, NULL, 0);
+		free(cmd_path);
 	}
 }
 
@@ -74,6 +75,7 @@ void	execute(char **envp, char **args)
 		close(fd[1]);
 		dup2(fd[0], STDIN_FILENO);
 		waitpid(id, NULL, 0);
+		free(cmd_path);
 	}
 }
 
@@ -82,7 +84,7 @@ char	**ft_combine(t_list **command)
 	char	**args;
 	int		i;
 
-	args = (char **)malloc(10);
+	args = (char **)malloc(80);
 	i = 0;
 	while (((t_token *)(*command)->content)->type == TOKEN_TEXT || ((t_token *)(*command)->content)->type == TOKEN_LAST)
 	{
@@ -265,13 +267,11 @@ void process_tokens(t_list *tokens, char *envp[])
         }
         else if (((t_token *)tokens->content)->type == TOKEN_TEXT || ((t_token *)tokens->content)->type == TOKEN_LAST)
         {
-        	printf("$ executing..\n");
         	pipex(&tokens, envp, &((t_token *)tokens->content)->type);
         }
         else if (((t_token *)tokens->content)->type == TOKEN_PIPE)
         {
         	tokens = tokens->next;
-        	printf("$ executing..............\n");
         	pipex(&tokens, envp, &((t_token *)tokens->content)->type);
         }
         else if (((t_token *)tokens->content)->type == TOKEN_R_INPUT)

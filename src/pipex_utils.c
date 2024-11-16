@@ -72,6 +72,7 @@ char	*get_command_path(char **envp, char *argv)
 			free_split(path);
 			return (real_path);
 		}
+		free(real_path);
 		i++;
 	}
 	free_split(path);
