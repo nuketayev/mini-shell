@@ -49,11 +49,13 @@ static char	*remove_char_until(char *line, char c)
 	return (f_line);
 }
 
-t_token *create_token(t_token_type type, char *value)
+t_token	*create_token(t_token_type type, char *value)
 {
-	t_token *token = malloc(sizeof(t_token));
+	t_token	*token;
+
+	token = malloc(sizeof(t_token));
 	if (!token)
-		return NULL;
+		return (NULL);
 	token->type = type;
 	token->value = value;
 	return (token);
@@ -62,33 +64,32 @@ t_token *create_token(t_token_type type, char *value)
 int	add_token_to_list(t_list **node, int index, int type, char *value)
 {
 	*node = ft_lstnew(create_token(type, value));
-	return index;
+	return (index);
 }
 
-t_list *finish_tokenizing(t_list *first)
+t_list	*finish_tokenizing(t_list *first)
 {
-	t_list *current;
+	t_list	*current;
 	t_list	*last_cmd;
+
 	current = first;
 	last_cmd = NULL;
-	while (((t_token *)current->content)->type == TOKEN_R_INPUT ||
-		((t_token *)current->content)->type == TOKEN_HERE_DOC)
+	while (((t_token *)current->content)->type == TOKEN_R_INPUT
+		|| ((t_token *)current->content)->type == TOKEN_HERE_DOC)
 	{
 		current = current->next;
 		if (current)
 			current = current->next;
 	}
-
 	while (current)
 	{
 		if (((t_token *)current->content)->type == TOKEN_TEXT)
 			last_cmd = current;
 		while (((t_token *)current->content)->type == TOKEN_TEXT)
 			current = current->next;
-		if (last_cmd &&
-			(((t_token *)current->content)->type == TOKEN_END ||
-			((t_token *)current->content)->type == TOKEN_R_OUTPUT ||
-			((t_token *)current->content)->type == TOKEN_A_OUTPUT))
+		if (last_cmd && (((t_token *)current->content)->type == TOKEN_END
+				|| ((t_token *)current->content)->type == TOKEN_R_OUTPUT
+				|| ((t_token *)current->content)->type == TOKEN_A_OUTPUT))
 		{
 			((t_token *)last_cmd->content)->type = TOKEN_LAST;
 			return (first);
@@ -100,7 +101,7 @@ t_list *finish_tokenizing(t_list *first)
 
 char	*handle_quotes(char *line)
 {
-	size_t		i;
+	size_t	i;
 	char	*new_line;
 	char	*temp;
 
@@ -133,8 +134,8 @@ int	find_end(char *line, int i, char c)
 
 t_list	*tokenize_input(char *line)
 {
-	t_list	*root;
-	t_list	*new;
+	t_list *root;
+	t_list *new;
 	int index;
 
 	index = 0;
@@ -143,22 +144,28 @@ t_list	*tokenize_input(char *line)
 	while (line[index])
 	{
 		if (line[index] == '<' && line[index + 1] == '<')
-			index = add_token_to_list(&new, index + 2, TOKEN_HERE_DOC, ft_strdup("<<"));
+			index = add_token_to_list(&new, index + 2, TOKEN_HERE_DOC,
+					ft_strdup("<<"));
 		else if (line[index] == '>' && line[index + 1] == '>')
-			index = add_token_to_list(&new, index + 2, TOKEN_A_OUTPUT, ft_strdup(">>"));
+			index = add_token_to_list(&new, index + 2, TOKEN_A_OUTPUT,
+					ft_strdup(">>"));
 		else if (line[index] == '<')
-			index = add_token_to_list(&new, index + 1, TOKEN_R_INPUT, ft_strdup("<"));
+			index = add_token_to_list(&new, index + 1, TOKEN_R_INPUT,
+					ft_strdup("<"));
 		else if (line[index] == '>')
-			index = add_token_to_list(&new, index + 1, TOKEN_R_OUTPUT, ft_strdup(">"));
+			index = add_token_to_list(&new, index + 1, TOKEN_R_OUTPUT,
+					ft_strdup(">"));
 		else if (line[index] == '|')
-			index = add_token_to_list(&new, index + 1, TOKEN_PIPE, ft_strdup("|"));
+			index = add_token_to_list(&new, index + 1, TOKEN_PIPE,
+					ft_strdup("|"));
 		else if (!isspace(line[index]))
 		{
 			int start;
 			char *token_value;
 
 			start = index;
-			while (line[index] && !isspace(line[index]) && line[index] != '<' && line[index] != '>')
+			while (line[index] && !isspace(line[index]) && line[index] != '<'
+				&& line[index] != '>')
 			{
 				if (line[index] == '\'')
 					index = find_end(line, index + 1, '\'');
@@ -167,14 +174,14 @@ t_list	*tokenize_input(char *line)
 				index++;
 			}
 			token_value = handle_quotes(ft_substr(line, start, index - start));
-			if (ft_strncmp(token_value, "echoa", 5) == 0 ||
-				ft_strncmp(token_value, "cd", 2) == 0 ||
-				ft_strncmp(token_value, "pwd", 3) == 0 ||
-				ft_strncmp(token_value, "export", 6) == 0 ||
-				ft_strncmp(token_value, "unset", 5) == 0 ||
-				ft_strncmp(token_value, "env", 3) == 0 ||
-				ft_strncmp(token_value, "exit", 4) == 0)
-				index = add_token_to_list(&new, index, TOKEN_COMMAND, token_value);
+			if (ft_strncmp(token_value, "echoa", 5) == 0 || // echoa?
+				ft_strncmp(token_value, "cd", 2) == 0 || ft_strncmp(token_value,
+						"pwd", 3) == 0 || ft_strncmp(token_value, "export",
+						6) == 0 || ft_strncmp(token_value, "unset", 5) == 0
+					|| ft_strncmp(token_value, "env", 3) == 0
+					|| ft_strncmp(token_value, "exit", 4) == 0)
+				index = add_token_to_list(&new, index, TOKEN_COMMAND,
+						token_value);
 			else
 				index = add_token_to_list(&new, index, TOKEN_TEXT, token_value);
 		}

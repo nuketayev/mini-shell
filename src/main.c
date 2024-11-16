@@ -2,7 +2,6 @@
 
 sig_atomic_t	g_sigint_received = 0;
 
-
 void	handler(int signum)
 {
 	if (signum == SIGINT)
@@ -28,6 +27,7 @@ void	free_split(char **split_line)
 int	ft_splitlen(char *arr[])
 {
 	int	len;
+
 	if (!arr)
 		return (0);
 	len = 0;
@@ -36,21 +36,24 @@ int	ft_splitlen(char *arr[])
 	return (len);
 }
 
-void free_token(void *lst)
+void	free_token(void *lst)
 {
-	t_token *token = (t_token *)lst;
+	t_token	*token;
+
+	token = (t_token *)lst;
 	free(token->value);
 	free(token);
 }
 
 int	main(int _argc, char *_argv[], char *envp[])
 {
-	int    *status;
+	int		*status;
 	char	*line;
 	char	**split_line;
 	int		i;
 	int		split_len;
-	int	id;
+	int		id;
+	t_list	*tokens;
 
 	signal(SIGINT, &handler);
 	while (1)
@@ -62,13 +65,15 @@ int	main(int _argc, char *_argv[], char *envp[])
 		if (ft_strlen(line) > 0)
 		{
 			add_history(line);
-			t_list *tokens = tokenize_input(line);
+			tokens = tokenize_input(line);
 			id = fork();
 			if (id == 0)
 			{
 				for (t_list *temp = tokens; temp != NULL; temp = temp->next)
 				{
-					ft_errprintf("token: %s has type: %i\n", ((t_token *)temp->content)->value, ((t_token *)temp->content)->type);
+					ft_errprintf("token: %s has type: %i\n",
+						((t_token *)temp->content)->value,
+						((t_token *)temp->content)->type);
 				}
 				process_tokens(tokens, envp);
 				exit(0);

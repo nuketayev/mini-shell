@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   pipex_utils.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: gharazka <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: anuketay <anuketay@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/31 21:46:47 by gharazka          #+#    #+#             */
-/*   Updated: 2024/07/31 21:46:47 by gharazka         ###   ########.fr       */
+/*   Updated: 2024/11/16 16:10:22 by anuketay         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -65,8 +65,7 @@ char	*get_command_path(char **envp, char *argv)
 	path = get_path(envp);
 	while (path[i])
 	{
-		real_path = ft_strjoin(path[i],
-				argv, 0);
+		real_path = ft_strjoin(path[i], argv, 0);
 		if (access(real_path, X_OK) == 0)
 		{
 			free_split(path);

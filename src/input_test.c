@@ -22,6 +22,7 @@ int	get_process_count(char *line)
 {
 	int	i;
 	int	count;
+
 	if (!line)
 		return (0);
 	i = 0;
@@ -29,9 +30,10 @@ int	get_process_count(char *line)
 		count = 0;
 	else
 		count = 1;
-	while(line[i])
+	while (line[i])
 	{
-		if (line[i] == '|' || (line[i] == '>' && line [i + 1] != '>') || (line[i] == '<' && line [i + 1] != '<'))
+		if (line[i] == '|' || (line[i] == '>' && line[i + 1] != '>')
+			|| (line[i] == '<' && line[i + 1] != '<'))
 		{
 			count++;
 			if (line[i] != '|' && followed_by_command(line, i))
@@ -42,14 +44,12 @@ int	get_process_count(char *line)
 	return (count);
 }
 
-
-
 int	main(void)
 {
-	char	*line;
-	char	**split_line;
-	int		*process_list;
-	int		process_count;
+	char *line;
+	char **split_line;
+	int *process_list;
+	int process_count;
 
 	while (1)
 	{

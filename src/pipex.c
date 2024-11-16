@@ -36,7 +36,7 @@ t_program	init_struct(int argc, char *argv)
 
 void	execute_last(char **envp, char **args)
 {
-	int	id;
+	int		id;
 	char	*cmd_path;
 
 	cmd_path = get_command_path(envp, args[0]);
@@ -55,8 +55,8 @@ void	execute_last(char **envp, char **args)
 
 void	execute(char **envp, char **args)
 {
-	int	id;
-	int	fd[2];
+	int		id;
+	int		fd[2];
 	char	*cmd_path;
 
 	cmd_path = get_command_path(envp, args[0]);
@@ -68,7 +68,6 @@ void	execute(char **envp, char **args)
 		dup2(fd[1], STDOUT_FILENO);
 		if (execve(cmd_path, args, envp) == -1)
 			printf("nie dziala kurwa\n");
-
 	}
 	else
 	{
@@ -86,14 +85,15 @@ char	**ft_combine(t_list **command)
 
 	args = (char **)malloc(80);
 	i = 0;
-	while (((t_token *)(*command)->content)->type == TOKEN_TEXT || ((t_token *)(*command)->content)->type == TOKEN_LAST)
+	while (((t_token *)(*command)->content)->type == TOKEN_TEXT
+		|| ((t_token *)(*command)->content)->type == TOKEN_LAST)
 	{
 		args[i] = ft_strdup(((t_token *)(*command)->content)->value);
 		i++;
 		*command = (*command)->next;
 	}
 	args[i] = NULL;
-	return args;
+	return (args);
 }
 
 int	redirect_input(char *filename)
@@ -130,16 +130,18 @@ int	redirect_output(char *filename, t_token_type type)
 
 void	pipex(t_list **command, char *envp[], t_token_type *first)
 {
-	char		**args = ft_combine(command);
-	int			fd;
+	char	**args;
+	int		fd;
 
+	args = ft_combine(command);
 	fd = -1;
 	if (*first == TOKEN_LAST)
 	{
-		if (((t_token *)(*command)->content)->type == TOKEN_R_OUTPUT ||
-			((t_token *)(*command)->content)->type == TOKEN_A_OUTPUT)
+		if (((t_token *)(*command)->content)->type == TOKEN_R_OUTPUT
+			|| ((t_token *)(*command)->content)->type == TOKEN_A_OUTPUT)
 		{
-			fd = redirect_output(((t_token *)(*command)->next->content)->value, ((t_token *)(*command)->content)->type);
+			fd = redirect_output(((t_token *)(*command)->next->content)->value,
+					((t_token *)(*command)->content)->type);
 			*command = (*command)->next->next;
 		}
 		execute_last(envp, args);
@@ -150,8 +152,6 @@ void	pipex(t_list **command, char *envp[], t_token_type *first)
 		close(fd);
 	free_split(args);
 }
-
-
 
 int	get_another_line(char **line)
 {
@@ -207,92 +207,94 @@ void	limiter(char *limiter)
 	}
 }
 
-void process_tokens(t_list *tokens, char *envp[])
+void	process_tokens(t_list *tokens, char *envp[])
 {
-    while (((t_token *)tokens->content)->type != TOKEN_END)
-    {
-        if (((t_token *)tokens->content)->type == TOKEN_COMMAND)
-        {
-            if (strcmp(((t_token *)tokens->content)->value, "echoa") == 0)
-            {
-                printf("$ Its echo command sukkaa why not showing\n");
-                // Handle echo command
-                tokens = tokens->next;
-                while (tokens && ((t_token *)tokens->content)->type == TOKEN_TEXT)
-                {
-                    printf("$ %s", ((t_token *)tokens->content)->value);
-                	tokens = tokens->next;
-                }
-                printf("\n");
-            }
-            else if (strcmp(((t_token *)tokens->content)->value, "cd") == 0)
-            {
-                // Handle cd command
-            	tokens = tokens->next;
-                if (tokens && ((t_token *)tokens->content)->type == TOKEN_TEXT)
-                {
-                    // Process cd argument
-                	tokens = tokens->next;
-                }
-            }
-            else if (strcmp(((t_token *)tokens->content)->value, "pwd") == 0)
-            {
-                // Handle pwd command
+	while (((t_token *)tokens->content)->type != TOKEN_END)
+	{
+		if (((t_token *)tokens->content)->type == TOKEN_COMMAND)
+		{
+			if (strcmp(((t_token *)tokens->content)->value, "echoa") == 0)
+			{
+				printf("$ Its echo command sukkaa why not showing\n");
+				// Handle echo command
+				tokens = tokens->next;
+				while (tokens
+					&& ((t_token *)tokens->content)->type == TOKEN_TEXT)
+				{
+					printf("$ %s", ((t_token *)tokens->content)->value);
+					tokens = tokens->next;
+				}
+				printf("\n");
+			}
+			else if (strcmp(((t_token *)tokens->content)->value, "cd") == 0)
+			{
+				// Handle cd command
+				tokens = tokens->next;
+				if (tokens && ((t_token *)tokens->content)->type == TOKEN_TEXT)
+				{
+					// Process cd argument
+					tokens = tokens->next;
+				}
+			}
+			else if (strcmp(((t_token *)tokens->content)->value, "pwd") == 0)
+			{
+				// Handle pwd command
 				pipex(&tokens, envp, 0);
-            }
-            else if (strcmp(((t_token *)tokens->content)->value, "export") == 0)
-            {
-                // Handle export command
-            	pipex(&tokens, envp, 0);
-            	tokens = tokens->next;
-            }
-            else if (strcmp(((t_token *)tokens->content)->value, "unset") == 0)
-            {
-                // Handle unset command
-            	pipex(&tokens, envp, 0);
-            	tokens = tokens->next;
-            }
-            else if (strcmp(((t_token *)tokens->content)->value, "env") == 0)
-            {
-                // Handle env command
-            	pipex(&tokens, envp, 0);
-            	tokens = tokens->next;
-            }
-            else if (strcmp(((t_token *)tokens->content)->value, "exit") == 0)
-            {
-                // Handle exit command
-            	pipex(&tokens, envp, 0);
-            	tokens = tokens->next;
-            }
-        }
-        else if (((t_token *)tokens->content)->type == TOKEN_TEXT || ((t_token *)tokens->content)->type == TOKEN_LAST)
-        {
-        	pipex(&tokens, envp, &((t_token *)tokens->content)->type);
-        }
-        else if (((t_token *)tokens->content)->type == TOKEN_PIPE)
-        {
-        	tokens = tokens->next;
-        	pipex(&tokens, envp, &((t_token *)tokens->content)->type);
-        }
-        else if (((t_token *)tokens->content)->type == TOKEN_R_INPUT)
-        {
-            if (redirect_input(((t_token *)tokens->next->content)->value) == -1)
-            	break;
-        	tokens = tokens->next->next;
-        }
-        else if (((t_token *)tokens->content)->type == TOKEN_R_OUTPUT)
-        {
-            // Handle output redirection
-        }
-        else if (((t_token *)tokens->content)->type == TOKEN_A_OUTPUT)
-        {
-            // Handle append output redirection
-        }
-        else if (((t_token *)tokens->content)->type == TOKEN_HERE_DOC)
-        {
-            limiter(((t_token *)tokens->next->content)->value);
-        	tokens = tokens->next->next;
-        }
-    }
-    // execute_last(&program, envp, tokens[i - 1]->value);
+			}
+			else if (strcmp(((t_token *)tokens->content)->value, "export") == 0)
+			{
+				// Handle export command
+				pipex(&tokens, envp, 0);
+				tokens = tokens->next;
+			}
+			else if (strcmp(((t_token *)tokens->content)->value, "unset") == 0)
+			{
+				// Handle unset command
+				pipex(&tokens, envp, 0);
+				tokens = tokens->next;
+			}
+			else if (strcmp(((t_token *)tokens->content)->value, "env") == 0)
+			{
+				// Handle env command
+				pipex(&tokens, envp, 0);
+				tokens = tokens->next;
+			}
+			else if (strcmp(((t_token *)tokens->content)->value, "exit") == 0)
+			{
+				// Handle exit command
+				pipex(&tokens, envp, 0);
+				tokens = tokens->next;
+			}
+		}
+		else if (((t_token *)tokens->content)->type == TOKEN_TEXT
+			|| ((t_token *)tokens->content)->type == TOKEN_LAST)
+		{
+			pipex(&tokens, envp, &((t_token *)tokens->content)->type);
+		}
+		else if (((t_token *)tokens->content)->type == TOKEN_PIPE)
+		{
+			tokens = tokens->next;
+			pipex(&tokens, envp, &((t_token *)tokens->content)->type);
+		}
+		else if (((t_token *)tokens->content)->type == TOKEN_R_INPUT)
+		{
+			if (redirect_input(((t_token *)tokens->next->content)->value) == -1)
+				break ;
+			tokens = tokens->next->next;
+		}
+		else if (((t_token *)tokens->content)->type == TOKEN_R_OUTPUT)
+		{
+			// Handle output redirection
+		}
+		else if (((t_token *)tokens->content)->type == TOKEN_A_OUTPUT)
+		{
+			// Handle append output redirection
+		}
+		else if (((t_token *)tokens->content)->type == TOKEN_HERE_DOC)
+		{
+			limiter(((t_token *)tokens->next->content)->value);
+			tokens = tokens->next->next;
+		}
+	}
+	// execute_last(&program, envp, tokens[i - 1]->value);
 }

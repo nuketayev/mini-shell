@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_lstlast.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: gharazka <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: anuketay <anuketay@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/28 20:22:29 by gharazka          #+#    #+#             */
-/*   Updated: 2023/10/28 20:22:30 by gharazka         ###   ########.fr       */
+/*   Updated: 2024/11/16 16:12:12 by anuketay         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,8 +19,8 @@ t_list	*ft_lstlast(t_list *lst)
 		return (NULL);
 	}
 	while (lst->next != NULL)
-    {
+	{
 		lst = lst->next;
-          }
+	}
 	return (lst);
 }
