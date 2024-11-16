@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   parse_input.c                                      :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: anuketay <anuketay@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2024/11/16 16:50:17 by anuketay          #+#    #+#             */
+/*   Updated: 2024/11/16 16:58:06 by anuketay         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "../inc/minishell.h"
 
 static int	count_char_until(char *line, char c, char until)
@@ -134,9 +146,11 @@ int	find_end(char *line, int i, char c)
 
 t_list	*tokenize_input(char *line)
 {
-	t_list *root;
-	t_list *new;
-	int index;
+	t_list	*root;
+	t_list	*new;
+	int		index;
+	int		start;
+	char	*token_value;
 
 	index = 0;
 	root = NULL;
@@ -160,9 +174,6 @@ t_list	*tokenize_input(char *line)
 					ft_strdup("|"));
 		else if (!isspace(line[index]))
 		{
-			int start;
-			char *token_value;
-
 			start = index;
 			while (line[index] && !isspace(line[index]) && line[index] != '<'
 				&& line[index] != '>')
@@ -174,12 +185,13 @@ t_list	*tokenize_input(char *line)
 				index++;
 			}
 			token_value = handle_quotes(ft_substr(line, start, index - start));
-			if (ft_strncmp(token_value, "echoa", 5) == 0 || // echoa?
-				ft_strncmp(token_value, "cd", 2) == 0 || ft_strncmp(token_value,
-						"pwd", 3) == 0 || ft_strncmp(token_value, "export",
-						6) == 0 || ft_strncmp(token_value, "unset", 5) == 0
-					|| ft_strncmp(token_value, "env", 3) == 0
-					|| ft_strncmp(token_value, "exit", 4) == 0)
+			if (ft_strncmp(token_value, "echoa", 5) == 0
+				|| ft_strncmp(token_value, "cd", 2) == 0
+				|| ft_strncmp(token_value,
+					"pwd", 3) == 0 || ft_strncmp(token_value, "export",
+					6) == 0 || ft_strncmp(token_value, "unset", 5) == 0
+				|| ft_strncmp(token_value, "env", 3) == 0
+				|| ft_strncmp(token_value, "exit", 4) == 0)
 				index = add_token_to_list(&new, index, TOKEN_COMMAND,
 						token_value);
 			else
