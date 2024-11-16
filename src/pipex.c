@@ -128,6 +128,42 @@ int	redirect_output(char *filename, t_token_type type)
 	return (fd);
 }
 
+void	execute_builtins(char *envp[], char **args)
+{
+	if (args[0] == "echoa")
+	{
+		echo();
+	}
+	else if (args[0] == "pwd")
+	{
+		pwd();
+	}
+	// etc.
+}
+
+void	built_in_commands(t_list **command, char *envp[], t_token_type *first)
+{
+	char	**args;
+	int		fd;
+
+	args = ft_combine(command);
+	fd = -1;
+	if (*first == TOKEN_LAST)
+	{
+		if (((t_token *)(*command)->content)->type == TOKEN_R_OUTPUT
+			|| ((t_token *)(*command)->content)->type == TOKEN_A_OUTPUT)
+		{
+			fd = redirect_output(((t_token *)(*command)->next->content)->value,
+					((t_token *)(*command)->content)->type);
+			*command = (*command)->next->next;
+		}
+		execute_builtins(envp, args);
+	}
+	if (fd != -1)
+		close(fd);
+	free_split(args);
+}
+
 void	pipex(t_list **command, char *envp[], t_token_type *first)
 {
 	char	**args;
