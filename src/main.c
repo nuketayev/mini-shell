@@ -36,6 +36,13 @@ int	ft_splitlen(char *arr[])
 	return (len);
 }
 
+void free_token(void *lst)
+{
+	t_token *token = (t_token *)lst;
+	free(token->value);
+	free(token);
+}
+
 int	main(int _argc, char *_argv[], char *envp[])
 {
 	int    *status;
@@ -55,17 +62,19 @@ int	main(int _argc, char *_argv[], char *envp[])
 		if (ft_strlen(line) > 0)
 		{
 			add_history(line);
-			id = fork();
-			split_line = ft_split(line, '|');
 			t_list *tokens = tokenize_input(line);
+			id = fork();
 			if (id == 0)
 			{
+				for (t_list *temp = tokens; temp != NULL; temp = temp->next)
+				{
+					ft_errprintf("token: %s has type: %i\n", ((t_token *)temp->content)->value, ((t_token *)temp->content)->type);
+				}
 				process_tokens(tokens, envp);
-				//need to free tokens later
 				exit(0);
 			}
-			free_split(split_line);
 			waitpid(id, NULL, 0);
+			ft_lstclear(&tokens, free_token);
 		}
 		free(line);
 	}

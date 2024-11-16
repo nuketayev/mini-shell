@@ -49,6 +49,7 @@ void	execute_last(char **envp, char **args)
 	else
 	{
 		waitpid(id, NULL, 0);
+		free(cmd_path);
 	}
 }
 
@@ -74,6 +75,7 @@ void	execute(char **envp, char **args)
 		close(fd[1]);
 		dup2(fd[0], STDIN_FILENO);
 		waitpid(id, NULL, 0);
+		free(cmd_path);
 	}
 }
 
@@ -82,7 +84,7 @@ char	**ft_combine(t_list **command)
 	char	**args;
 	int		i;
 
-	args = (char **)malloc(10);
+	args = (char **)malloc(80);
 	i = 0;
 	while (((t_token *)(*command)->content)->type == TOKEN_TEXT || ((t_token *)(*command)->content)->type == TOKEN_LAST)
 	{
@@ -94,50 +96,116 @@ char	**ft_combine(t_list **command)
 	return args;
 }
 
+int	redirect_input(char *filename)
+{
+	int	fd;
+
+	fd = open(filename, O_RDONLY);
+	if (fd == -1)
+	{
+		ft_errprintf("wrong file kurwo\n");
+		return (-1);
+	}
+	dup2(fd, STDIN_FILENO);
+	close(fd);
+	return (0);
+}
+
+int	redirect_output(char *filename, t_token_type type)
+{
+	int	fd;
+
+	if (type == TOKEN_R_OUTPUT)
+		fd = open(filename, O_WRONLY | O_CREAT | O_TRUNC, 0666);
+	else
+		fd = open(filename, O_WRONLY | O_CREAT | O_APPEND, 0666);
+	if (fd == -1)
+	{
+		ft_errprintf("wrong file kurwo\n");
+		return (-1);
+	}
+	dup2(fd, STDOUT_FILENO);
+	return (fd);
+}
+
 void	pipex(t_list **command, char *envp[], t_token_type *first)
 {
 	char		**args = ft_combine(command);
+	int			fd;
 
+	fd = -1;
 	if (*first == TOKEN_LAST)
 	{
+		if (((t_token *)(*command)->content)->type == TOKEN_R_OUTPUT ||
+			((t_token *)(*command)->content)->type == TOKEN_A_OUTPUT)
+		{
+			fd = redirect_output(((t_token *)(*command)->next->content)->value, ((t_token *)(*command)->content)->type);
+			*command = (*command)->next->next;
+		}
 		execute_last(envp, args);
 	}
 	else
 		execute(envp, args);
+	if (fd != -1)
+		close(fd);
 	free_split(args);
 }
 
-/// Here below is new code
 
 
+int	get_another_line(char **line)
+{
+	int		i;
+	int		result;
+	char	c;
+	char	*buffer;
 
-// void execute_command(char *envp[], t_list **command)
-// {
-//     char *argv[] = {command, NULL};
-//     char *path = getenv("PATH");
-//     char *full_path = NULL;
-//     char *token = strtok(path, ":");
-//
-// 	while (command && command)
-// 	{
-// 		printf("%s\n", ((t_token *)(*command)->content)->value);
-// 		command = &(*command)->next;
-// 	}
-//     // while (token != NULL)
-//     // {
-// 	   //  full_path = malloc(strlen(token) + strlen(command) + 2);
-// 	   //  if (!full_path)
-// 	   //  {
-// 		  //   perror("malloc");
-// 		  //   exit(EXIT_FAILURE);
-// 	   //  }
-// 	   //  sprintf(full_path, "%s/%s", token, command);
-// 	   //  execve(full_path, argv, envp);
-// 	   //  free(full_path);
-// 	   //  token = strtok(NULL, ":");
-//     // }
-//     exit(EXIT_FAILURE);
-// }
+	i = 0;
+	result = 0;
+	buffer = (char *)malloc(10000);
+	if (!buffer)
+		return (-1);
+	result = read(0, &c, 1);
+	while (result && c != '\n' && c != '\0')
+	{
+		if (c != '\n' && c != '\0')
+			buffer[i] = c;
+		i++;
+		result = read(0, &c, 1);
+	}
+	buffer[i] = '\n';
+	buffer[++i] = '\0';
+	*line = buffer;
+	free(buffer);
+	return (result);
+}
+
+void	limiter(char *limiter)
+{
+	pid_t	reader;
+	int		fd[2];
+	char	*line;
+
+	if (pipe(fd) == -1)
+		ft_errprintf("wrong pipe man\n");
+	reader = fork();
+	if (reader == 0)
+	{
+		close(fd[0]);
+		while (get_another_line(&line))
+		{
+			if (ft_strncmp(line, limiter, ft_strlen(limiter)) == 0)
+				exit(EXIT_SUCCESS);
+			write(fd[1], line, ft_strlen(line));
+		}
+	}
+	else
+	{
+		close(fd[1]);
+		dup2(fd[0], STDIN_FILENO);
+		wait(NULL);
+	}
+}
 
 void process_tokens(t_list *tokens, char *envp[])
 {
@@ -145,7 +213,7 @@ void process_tokens(t_list *tokens, char *envp[])
     {
         if (((t_token *)tokens->content)->type == TOKEN_COMMAND)
         {
-            if (strcmp(((t_token *)tokens->content)->value, "echo") == 0)
+            if (strcmp(((t_token *)tokens->content)->value, "echoa") == 0)
             {
                 printf("$ Its echo command sukkaa why not showing\n");
                 // Handle echo command
@@ -199,18 +267,18 @@ void process_tokens(t_list *tokens, char *envp[])
         }
         else if (((t_token *)tokens->content)->type == TOKEN_TEXT || ((t_token *)tokens->content)->type == TOKEN_LAST)
         {
-        	printf("$ executing..\n");
         	pipex(&tokens, envp, &((t_token *)tokens->content)->type);
         }
         else if (((t_token *)tokens->content)->type == TOKEN_PIPE)
         {
         	tokens = tokens->next;
-        	printf("$ executing..............\n");
         	pipex(&tokens, envp, &((t_token *)tokens->content)->type);
         }
         else if (((t_token *)tokens->content)->type == TOKEN_R_INPUT)
         {
-            // Handle input redirection
+            if (redirect_input(((t_token *)tokens->next->content)->value) == -1)
+            	break;
+        	tokens = tokens->next->next;
         }
         else if (((t_token *)tokens->content)->type == TOKEN_R_OUTPUT)
         {
@@ -222,7 +290,8 @@ void process_tokens(t_list *tokens, char *envp[])
         }
         else if (((t_token *)tokens->content)->type == TOKEN_HERE_DOC)
         {
-            // Handle here document
+            limiter(((t_token *)tokens->next->content)->value);
+        	tokens = tokens->next->next;
         }
     }
     // execute_last(&program, envp, tokens[i - 1]->value);
