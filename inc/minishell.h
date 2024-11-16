@@ -41,6 +41,8 @@ typedef struct s_token
 	char			*value;
 }					t_token;
 
+extern volatile sig_atomic_t	g_sigint_received;
+
 typedef struct s_program
 {
 	int				infile_fd;
@@ -64,5 +66,7 @@ char				*get_command_path(char **envp, char *argv);
 void				pipex(t_list **command, char *envp[], t_token_type *first);
 t_list				*tokenize_input(char *line);
 void				process_tokens(t_list *tokens, char *envp[]);
+void				handler(int signum);
+void				handler_two(int signum);
 
 #endif
