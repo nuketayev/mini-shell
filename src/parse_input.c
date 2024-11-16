@@ -88,7 +88,8 @@ t_list *finish_tokenizing(t_list *first)
 	t_list	*last_cmd;
 	current = first;
 	last_cmd = NULL;
-	if (((t_token *)current->content)->type == TOKEN_R_INPUT)
+	if (((t_token *)current->content)->type == TOKEN_R_INPUT ||
+		((t_token *)current->content)->type == TOKEN_HERE_DOC)
 	{
 		current = current->next;
 		if (current)

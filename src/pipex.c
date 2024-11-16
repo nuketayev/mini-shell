@@ -122,6 +122,60 @@ int	handle_file(char *filename, t_token_type type)
 	return (0);
 }
 
+int	get_another_line(char **line)
+{
+	int		i;
+	int		result;
+	char	c;
+	char	*buffer;
+
+	i = 0;
+	result = 0;
+	buffer = (char *)malloc(10000);
+	if (!buffer)
+		return (-1);
+	result = read(0, &c, 1);
+	while (result && c != '\n' && c != '\0')
+	{
+		if (c != '\n' && c != '\0')
+			buffer[i] = c;
+		i++;
+		result = read(0, &c, 1);
+	}
+	buffer[i] = '\n';
+	buffer[++i] = '\0';
+	*line = buffer;
+	free(buffer);
+	return (result);
+}
+
+void	limiter(char *limiter)
+{
+	pid_t	reader;
+	int		fd[2];
+	char	*line;
+
+	if (pipe(fd) == -1)
+		ft_errprintf("wrong pipe man\n");
+	reader = fork();
+	if (reader == 0)
+	{
+		close(fd[0]);
+		while (get_another_line(&line))
+		{
+			if (ft_strncmp(line, limiter, ft_strlen(limiter)) == 0)
+				exit(EXIT_SUCCESS);
+			write(fd[1], line, ft_strlen(line));
+		}
+	}
+	else
+	{
+		close(fd[1]);
+		dup2(fd[0], STDIN_FILENO);
+		wait(NULL);
+	}
+}
+
 void process_tokens(t_list *tokens, char *envp[])
 {
     while (((t_token *)tokens->content)->type != TOKEN_END)
@@ -207,7 +261,8 @@ void process_tokens(t_list *tokens, char *envp[])
         }
         else if (((t_token *)tokens->content)->type == TOKEN_HERE_DOC)
         {
-            // Handle here document
+            limiter(((t_token *)tokens->next->content)->value);
+        	tokens = tokens->next->next;
         }
     }
     // execute_last(&program, envp, tokens[i - 1]->value);
