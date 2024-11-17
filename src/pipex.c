@@ -211,6 +211,7 @@ int	get_another_line(char **line)
 	buffer = (char *)malloc(10000);
 	if (!buffer)
 		return (-1);
+	write(0, "> ", 2);
 	result = read(0, &c, 1);
 	while (result && c != '\n' && c != '\0')
 	{
