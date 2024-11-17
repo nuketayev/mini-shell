@@ -128,6 +128,16 @@ int	redirect_output(char *filename, t_token_type type)
 	return (fd);
 }
 
+void echo()
+{
+	return;
+}
+
+void pwd()
+{
+	return;
+}
+
 void	execute_builtins(char *envp[], char **args)
 {
 	if (args[0] == "echoa")

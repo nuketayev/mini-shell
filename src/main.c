@@ -12,17 +12,6 @@
 
 #include "../inc/minishell.h"
 
-sig_atomic_t	g_sigint_received = 0;
-
-void	handler(int signum)
-{
-	if (signum == SIGINT)
-	{
-		g_sigint_received = 1;
-		ft_putstr_fd("\n$ ", 0);
-	}
-}
-
 void	free_split(char **split_line)
 {
 	int	i;
