@@ -179,7 +179,6 @@ void	pipex(t_list **command, char *envp[], t_token_type *first)
 	char	**args;
 	int		fd;
 
-	signal(SIGINT, &handler_two);
 	args = ft_combine(command);
 	fd = -1;
 	if (*first == TOKEN_LAST)
@@ -212,6 +211,7 @@ int	get_another_line(char **line)
 	buffer = (char *)malloc(10000);
 	if (!buffer)
 		return (-1);
+	write(0, "> ", 2);
 	result = read(0, &c, 1);
 	while (result && c != '\n' && c != '\0')
 	{
