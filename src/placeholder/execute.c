@@ -6,11 +6,11 @@ static void	process_builtins(char **args, char *envp[], t_data *data)
 		pwd(args, envp);
 	else if (ft_strncmp(args[0], "echo", 4) == 0)
 		echo(args, envp);
-	else if (ft_strncmp(args[0], "export", 6) == 0) // same case as in unset
+	else if (ft_strncmp(args[0], "export", 6) == 0)
 		export(args, envp);
-	else if (ft_strncmp(args[0], "unset", 5) == 0) //we might have to put envp in some new struct so the unset works
+	else if (ft_strncmp(args[0], "unset", 5) == 0)
 		unset(args, envp);
-	else if (ft_strncmp(args[0], "exit", 4) == 0) //test this in bash because it looks like if it's piped it does not exit
+	else if (ft_strncmp(args[0], "exit", 4) == 0)
 		new_exit(args, envp, data);
 	else if (ft_strncmp(args[0], "env", 3) == 0)
 		env(args, envp);
@@ -84,7 +84,7 @@ static char	**ft_combine(t_list **command)
 	return (args);
 }
 
-void	process_exec(t_list **command, char *envp[], t_token_type *first, t_data *data)
+void	process_exec(t_list **command, t_token_type *first, t_data *data)
 {
 	char	**args;
 	int		fd;
@@ -100,10 +100,10 @@ void	process_exec(t_list **command, char *envp[], t_token_type *first, t_data *d
 					((t_token *)(*command)->content)->type);
 			*command = (*command)->next->next;
 		}
-		execute_last(envp, args, data);
+		execute_last(data->envp, args, data);
 	}
 	else
-		execute(envp, args, data);
+		execute(data->envp, args, data);
 	if (fd != -1)
 		close(fd);
 	free_split(args);

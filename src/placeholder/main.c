@@ -21,7 +21,8 @@ static void	free_token(void *lst)
 	free(token);
 }
 
-static void	process_input(char *line, struct sigaction sa, char *envp[], t_data *data)
+static void	process_input(char *line, struct sigaction sa, char *envp[],
+		t_data *data)
 {
 	int		id;
 	t_list	*tokens;

@@ -42,9 +42,9 @@ typedef struct s_token
 
 typedef struct s_data
 {
-	int	exit_flag;
+	int		exit_flag;
 	char	**envp;
-} t_data;
+}			t_data;
 
 //signal_handler.c
 void	set_handler_one(struct sigaction *sa);
@@ -68,7 +68,7 @@ t_list	*finish_tokenizing(t_list *first);
 char	*handle_quotes(char *line);
 
 //execute.c
-void	process_exec(t_list **command, char *envp[], t_token_type *first, t_data *data);
+void	process_exec(t_list **command, t_token_type *first, t_data *data);
 
 //redirections.c
 int		redirect_input(char *filename);

@@ -76,6 +76,7 @@ char	*get_command_path(char **envp, char *argv)
 	free_split(path);
 	return (NULL);
 }
+
 int	is_command(char *cmd)
 {
 	if (ft_strncmp(cmd, "echo", 4) == 0

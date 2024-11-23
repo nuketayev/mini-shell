@@ -19,12 +19,12 @@ void	process_tokens(t_list *tokens, char *envp[], t_data *data)
 		if (((t_token *)tokens->content)->type == TOKEN_TEXT
 			|| ((t_token *)tokens->content)->type == TOKEN_LAST)
 		{
-			process_exec(&tokens, envp, &((t_token *)tokens->content)->type, data);
+			process_exec(&tokens, &((t_token *)tokens->content)->type, data);
 		}
 		else if (((t_token *)tokens->content)->type == TOKEN_PIPE)
 		{
 			tokens = tokens->next;
-			process_exec(&tokens, envp, &((t_token *)tokens->content)->type, data);
+			process_exec(&tokens, &((t_token *)tokens->content)->type, data);
 		}
 		else if (((t_token *)tokens->content)->type == TOKEN_R_INPUT)
 		{
