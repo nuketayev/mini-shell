@@ -4,7 +4,7 @@ LDFLAGS = -lreadline
 
 LIBFT = lib/libft
 LIB = $(LIBFT)/libft.a
-SOURCES = src/main.c src/parse_input.c src/pipex.c src/pipex_utils.c src/signal_handler.c
+SOURCES = src/main.c src/parse_input.c src/pipex.c src/pipex_utils.c src/signal_handler.c src/handle_quotes.c src/get_last_token.c src/redirections.c src/execute.c
 
 OBJECTS = ${SOURCES:.c=.o}
 HEADERS = -I ../inc -I /usr/include/readline

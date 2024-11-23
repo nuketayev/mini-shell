@@ -12,10 +12,17 @@
 
 #include "../inc/minishell.h"
 
-void	free_and_exit(t_program program, char *message)
+void	free_split(char **args)
 {
-	free_commands(&program);
-	exit(EXIT_FAILURE);
+	int	i;
+
+	i = 0;
+	while (args[i])
+	{
+		free(args[i]);
+		i++;
+	}
+	free(args);
 }
 
 char	**get_path(char *envp[])
@@ -45,14 +52,6 @@ char	**get_path(char *envp[])
 		i++;
 	}
 	return (path);
-}
-
-void	free_commands(t_program *program)
-{
-	if (program->command != NULL)
-		free_split(program->command);
-	if (program->command_path)
-		free(program->command_path);
 }
 
 char	*get_command_path(char **envp, char *argv)

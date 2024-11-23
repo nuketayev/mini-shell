@@ -1,16 +1,29 @@
 #include "../inc/minishell.h"
 
-volatile sig_atomic_t	g_sigint_received = 0;
-
-
-
-
-void	set_handler_one()
+static void	handler_one(int signum)
 {
-	return;
+	ft_putstr_fd("\n", STDOUT_FILENO);
+	rl_on_new_line();
+	rl_replace_line("", 0);
+	rl_redisplay();
 }
 
-void	set_handler_two()
+static void	handler_two(int signum)
 {
-	return;
+	ft_putstr_fd("\n", STDOUT_FILENO);
+}
+
+void	set_handler_one(struct sigaction *sa)
+{
+	sa->sa_handler = handler_one;
+	sigemptyset(&sa->sa_mask);
+	sa->sa_flags = 0;
+	sigaction(SIGINT, sa, NULL);
+}
+
+void	set_handler_two(struct sigaction *sa)
+{
+	sa->sa_handler = handler_two;
+	sigemptyset(&sa->sa_mask);
+	sigaction(SIGINT, sa, NULL);
 }

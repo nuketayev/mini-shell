@@ -25,7 +25,6 @@
 typedef enum e_token_type
 {
 	TOKEN_END,
-	TOKEN_COMMAND,
 	TOKEN_R_INPUT,
 	TOKEN_HERE_DOC,
 	TOKEN_R_OUTPUT,
@@ -41,32 +40,32 @@ typedef struct s_token
 	char			*value;
 }					t_token;
 
-extern volatile sig_atomic_t	g_sigint_received;
+//signal_handler.c
+void	set_handler_one(struct sigaction *sa);
+void	set_handler_two(struct sigaction *sa);
 
-typedef struct s_program
-{
-	int				infile_fd;
-	int				outfile_fd;
-	char			*infile_name;
-	char			*outfile_name;
-	char			**command;
-	char			*command_path;
-	int				status;
-}					t_program;
+//parse_input.c
+t_list	*tokenize_input(char *line, int index, t_list *new, t_list *root);
 
-char				**ft_split_str(char *line);
-void				free_split(char **split_line);
-void				handler(int signum);
-void				free_and_exit(t_program program, char *message);
-void				free_commands(t_program *program);
-char				**get_path(char *envp[]);
-void				execute_last(char **envp, char **args);
-void				open_files(t_program *program);
-char				*get_command_path(char **envp, char *argv);
-void				pipex(t_list **command, char *envp[], t_token_type *first);
-t_list				*tokenize_input(char *line);
-void				process_tokens(t_list *tokens, char *envp[]);
-void				handler(int signum);
-void				handler_two(int signum);
+//pipex.c
+void	process_tokens(t_list *tokens, char *envp[]);
+
+//pipex_utils.c
+char	*get_command_path(char **envp, char *argv);
+void	free_split(char **args);
+
+//get_last_token.c
+t_list	*finish_tokenizing(t_list *first);
+
+//handle_quotes.c
+char	*handle_quotes(char *line);
+
+//execute.c
+void	process_exec(t_list **command, char *envp[], t_token_type *first);
+
+//redirections.c
+int		redirect_input(char *filename);
+int		redirect_output(char *filename, t_token_type type);
+void	here_doc(char *limiter);
 
 #endif
