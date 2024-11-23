@@ -10,21 +10,21 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../inc/minishell.h"
+#include "../../inc/minishell.h"
 
-void	process_tokens(t_list *tokens, char *envp[])
+void	process_tokens(t_list *tokens, char *envp[], t_data *data)
 {
 	while (((t_token *)tokens->content)->type != TOKEN_END)
 	{
 		if (((t_token *)tokens->content)->type == TOKEN_TEXT
 			|| ((t_token *)tokens->content)->type == TOKEN_LAST)
 		{
-			process_exec(&tokens, envp, &((t_token *)tokens->content)->type);
+			process_exec(&tokens, envp, &((t_token *)tokens->content)->type, data);
 		}
 		else if (((t_token *)tokens->content)->type == TOKEN_PIPE)
 		{
 			tokens = tokens->next;
-			process_exec(&tokens, envp, &((t_token *)tokens->content)->type);
+			process_exec(&tokens, envp, &((t_token *)tokens->content)->type, data);
 		}
 		else if (((t_token *)tokens->content)->type == TOKEN_R_INPUT)
 		{

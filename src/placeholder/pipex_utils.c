@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../inc/minishell.h"
+#include "../../inc/minishell.h"
 
 void	free_split(char **args)
 {
@@ -75,4 +75,16 @@ char	*get_command_path(char **envp, char *argv)
 	}
 	free_split(path);
 	return (NULL);
+}
+int	is_command(char *cmd)
+{
+	if (ft_strncmp(cmd, "echo", 4) == 0
+		|| ft_strncmp(cmd, "pwd", 3) == 0
+		|| ft_strncmp(cmd, "cd", 2) == 0
+		|| ft_strncmp(cmd, "export", 6) == 0
+		|| ft_strncmp(cmd, "unset", 5) == 0
+		|| ft_strncmp(cmd, "exit", 4) == 0
+		|| ft_strncmp(cmd, "env", 3) == 0)
+		return (1);
+	return (0);
 }

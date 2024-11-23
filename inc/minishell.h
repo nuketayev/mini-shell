@@ -40,6 +40,12 @@ typedef struct s_token
 	char			*value;
 }					t_token;
 
+typedef struct s_data
+{
+	int	exit_flag;
+	char	**envp;
+} t_data;
+
 //signal_handler.c
 void	set_handler_one(struct sigaction *sa);
 void	set_handler_two(struct sigaction *sa);
@@ -48,11 +54,12 @@ void	set_handler_two(struct sigaction *sa);
 t_list	*tokenize_input(char *line, int index, t_list *new, t_list *root);
 
 //pipex.c
-void	process_tokens(t_list *tokens, char *envp[]);
+void	process_tokens(t_list *tokens, char *envp[], t_data *data);
 
 //pipex_utils.c
 char	*get_command_path(char **envp, char *argv);
 void	free_split(char **args);
+int		is_command(char *cmd);
 
 //get_last_token.c
 t_list	*finish_tokenizing(t_list *first);
@@ -61,11 +68,21 @@ t_list	*finish_tokenizing(t_list *first);
 char	*handle_quotes(char *line);
 
 //execute.c
-void	process_exec(t_list **command, char *envp[], t_token_type *first);
+void	process_exec(t_list **command, char *envp[], t_token_type *first, t_data *data);
 
 //redirections.c
 int		redirect_input(char *filename);
 int		redirect_output(char *filename, t_token_type type);
 void	here_doc(char *limiter);
 
+void	unset(char **args, char *envp[]);
+void	pwd(char **args, char *envp[]);
+void	cd(char **args, char *envp[]);
+void	export(char **args, char *envp[]);
+void	new_exit(char **args, char *envp[], t_data *data);
+void	env(char **args, char *envp[]);
+void	echo(char **args, char *envp[]);
+
+void	print_lst(t_list *lst);
+void	print_array(char **arr);
 #endif

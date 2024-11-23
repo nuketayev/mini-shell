@@ -1,6 +1,25 @@
-#include "../inc/minishell.h"
+#include "../../inc/minishell.h"
 
-static void	execute_last(char **envp, char **args)
+static void	process_builtins(char **args, char *envp[], t_data *data)
+{
+	if (ft_strncmp(args[0], "pwd", 3) == 0)
+		pwd(args, envp);
+	else if (ft_strncmp(args[0], "echo", 4) == 0)
+		echo(args, envp);
+	else if (ft_strncmp(args[0], "export", 6) == 0) // same case as in unset
+		export(args, envp);
+	else if (ft_strncmp(args[0], "unset", 5) == 0) //we might have to put envp in some new struct so the unset works
+		unset(args, envp);
+	else if (ft_strncmp(args[0], "exit", 4) == 0) //test this in bash because it looks like if it's piped it does not exit
+		new_exit(args, envp, data);
+	else if (ft_strncmp(args[0], "env", 3) == 0)
+		env(args, envp);
+	else if (ft_strncmp(args[0], "cd", 3) == 0)
+		cd(args, envp);
+	exit(0);
+}
+
+static void	execute_last(char **envp, char **args, t_data *data)
 {
 	int		id;
 	char	*cmd_path;
@@ -9,7 +28,9 @@ static void	execute_last(char **envp, char **args)
 	id = fork();
 	if (id == 0)
 	{
-		if (execve(cmd_path, args, envp) == -1)
+		if (is_command(args[0]))
+			process_builtins(args, envp, data);
+		else if (execve(cmd_path, args, envp) == -1)
 			ft_errprintf("nie dziala kurwa\n");
 	}
 	else
@@ -19,7 +40,7 @@ static void	execute_last(char **envp, char **args)
 	}
 }
 
-static void	execute(char **envp, char **args)
+static void	execute(char **envp, char **args, t_data *data)
 {
 	int		id;
 	int		fd[2];
@@ -32,7 +53,9 @@ static void	execute(char **envp, char **args)
 	{
 		close(fd[0]);
 		dup2(fd[1], STDOUT_FILENO);
-		if (execve(cmd_path, args, envp) == -1)
+		if (is_command(args[0]))
+			process_builtins(args, envp, data);
+		else if (execve(cmd_path, args, envp) == -1)
 			ft_errprintf("nie dziala kurwa\n");
 	}
 	else
@@ -61,7 +84,7 @@ static char	**ft_combine(t_list **command)
 	return (args);
 }
 
-void	process_exec(t_list **command, char *envp[], t_token_type *first)
+void	process_exec(t_list **command, char *envp[], t_token_type *first, t_data *data)
 {
 	char	**args;
 	int		fd;
@@ -77,10 +100,10 @@ void	process_exec(t_list **command, char *envp[], t_token_type *first)
 					((t_token *)(*command)->content)->type);
 			*command = (*command)->next->next;
 		}
-		execute_last(envp, args);
+		execute_last(envp, args, data);
 	}
 	else
-		execute(envp, args);
+		execute(envp, args, data);
 	if (fd != -1)
 		close(fd);
 	free_split(args);
