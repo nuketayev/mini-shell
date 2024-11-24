@@ -28,13 +28,13 @@ static void	process_input(char *line, struct sigaction sa, char *envp[],
 	t_list	*tokens;
 
 	tokens = tokenize_input(line, 0, NULL, NULL);
-	print_lst(tokens);
+	// print_lst(tokens);
 	id = fork();
 	if (id == 0)
 	{
 		signal(SIGINT, SIG_DFL);
 		process_tokens(tokens, envp, data);
-		ft_printf("exit? %i\n", data->exit_flag);
+		// ft_printf("exit? %i\n", data->exit_flag);
 		exit(0);
 	}
 	set_handler_two(&sa);
