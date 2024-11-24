@@ -1,4 +1,4 @@
-#include "../inc/minishell.h"
+#include "../../inc/minishell.h"
 
 static char	*remove_char_until(char *line, char c) //handle_quotes.c
 {

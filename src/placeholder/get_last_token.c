@@ -1,4 +1,4 @@
-#include "../inc/minishell.h"
+#include "../../inc/minishell.h"
 
 static t_list	*find_last(t_list *current, t_list *first)
 {

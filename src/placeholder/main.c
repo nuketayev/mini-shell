@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../inc/minishell.h"
+#include "../../inc/minishell.h"
 
 static void	free_token(void *lst)
 {
@@ -21,17 +21,20 @@ static void	free_token(void *lst)
 	free(token);
 }
 
-static void	process_input(char *line, struct sigaction sa, char *envp[])
+static void	process_input(char *line, struct sigaction sa, char *envp[],
+		t_data *data)
 {
 	int		id;
 	t_list	*tokens;
 
 	tokens = tokenize_input(line, 0, NULL, NULL);
+	print_lst(tokens);
 	id = fork();
 	if (id == 0)
 	{
 		signal(SIGINT, SIG_DFL);
-		process_tokens(tokens, envp);
+		process_tokens(tokens, envp, data);
+		ft_printf("exit? %i\n", data->exit_flag);
 		exit(0);
 	}
 	set_handler_two(&sa);
@@ -42,8 +45,11 @@ static void	process_input(char *line, struct sigaction sa, char *envp[])
 int	main(int _argc, char *_argv[], char *envp[])
 {
 	struct sigaction	sa;
+	t_data				data;
 	char				*line;
 
+	data.envp = envp;
+	data.exit_flag = 0;
 	while (1)
 	{
 		set_handler_one(&sa);
@@ -53,7 +59,7 @@ int	main(int _argc, char *_argv[], char *envp[])
 		if (ft_strlen(line) > 0)
 		{
 			add_history(line);
-			process_input(line, sa, envp);
+			process_input(line, sa, envp, &data);
 		}
 		free(line);
 	}
