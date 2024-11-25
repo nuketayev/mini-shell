@@ -1,7 +1,7 @@
 #include "../../inc/minishell.h"
 #include <linux/limits.h>
 
-void	update_envp_pwd(char *new_pwd, char *envp[])
+void	update_envp_pwd(char *new_pwd, char **envp)
 {
     int		index;
     char	*new_pwd_entry;
@@ -24,7 +24,7 @@ void	update_envp_pwd(char *new_pwd, char *envp[])
     }
 }
 
-void	cd(char **args, char *envp[])
+void	cd(char **args, t_data *data)
 {
     char *path;
     char cwd[PATH_MAX];
@@ -43,8 +43,6 @@ void	cd(char **args, char *envp[])
         path = args[1];
     }
 
-    ft_printf("TRying to change directory to: %s\n", path);
-
     if (chdir(path) != 0)
     {
         perror("cd");
@@ -53,12 +51,10 @@ void	cd(char **args, char *envp[])
 
     if (getcwd(cwd, sizeof(cwd)) != NULL)
     {
-        ft_printf("Directory changed to %s\n", cwd);
-        update_envp_pwd(cwd, envp);
+        update_envp_pwd(cwd, data->envp);
     }
     else
     {
         perror("getcwd");
     }
-    ft_printf("PATH IS %s, and ARGS IS %s\n", path, args[1] ? args[1] : "NULL");
 }
