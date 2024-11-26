@@ -13,7 +13,7 @@ static void process_builtins(char **args, t_data *data)
     else if (ft_strncmp(args[0], "exit", 4) == 0)
         ft_exit();
     else if (ft_strncmp(args[0], "env", 3) == 0)
-        env(args, data->envp);
+        env(data->envp);
     else if (ft_strncmp(args[0], "cd", 2) == 0)
         cd(args, data);
 }
