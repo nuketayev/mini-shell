@@ -78,7 +78,7 @@ void	here_doc(char *limiter);
 void	unset(char **args, char *envp[]);
 void	pwd(char **args, char *envp[]);
 void	cd(char **args, t_data *data);
-void	export(char **args, char *envp[]);
+void	export(char **args, char ***envp);
 void	ft_exit(void);
 void	env(char *envp[]);
 void	echo(char **args, char *envp[]);

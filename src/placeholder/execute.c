@@ -7,7 +7,7 @@ static void process_builtins(char **args, t_data *data)
     else if (ft_strncmp(args[0], "echo", 4) == 0)
         echo(args, data->envp);
     else if (ft_strncmp(args[0], "export", 6) == 0)
-        export(args, data->envp);
+        export(args, &(data->envp));
     else if (ft_strncmp(args[0], "unset", 5) == 0)
         unset(args, data->envp);
     else if (ft_strncmp(args[0], "exit", 4) == 0)
