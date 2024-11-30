@@ -38,10 +38,10 @@ static void	execute_last(char **envp, char **args, t_data *data)
     else
     {
         waitpid(id, NULL, 0);
+    	close(STDIN_FILENO);
         free(cmd_path);
     }
-	if (data->fd != -1)
-		close(data->fd);
+
 }
 
 static t_data	*execute(char **envp, char **args, t_data *data)
@@ -62,6 +62,7 @@ static t_data	*execute(char **envp, char **args, t_data *data)
     {
         close(fd[0]);
         dup2(fd[1], STDOUT_FILENO);
+    	close(fd[1]);
         if (execve(cmd_path, args, envp) == -1)
             ft_errprintf("nie dziala kurwa\n");
     }
@@ -71,15 +72,11 @@ static t_data	*execute(char **envp, char **args, t_data *data)
     		data->ids = ft_lstnew((void *)id);
     	else
     		ft_lstadd_back(&data->ids, ft_lstnew((void *)id));
-    	ft_printf("id: %i\n", id);
-    	ft_printf("data->id: %i\n", data->ids->content);
-        close(fd[1]);
     	dup2(fd[0], STDIN_FILENO);
-    	data->fd = fd[0];
+    	close(fd[0]);
+    	close(fd[1]);
         free(cmd_path);
     }
-	if (data->fd != -1)
-		close(data->fd);
 	return (data);
 }
 

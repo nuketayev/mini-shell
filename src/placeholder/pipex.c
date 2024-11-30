@@ -40,9 +40,7 @@ void	process_tokens(t_list *tokens, char *envp[], t_data *data)
 	}
 	while (data->ids)
 	{
-		ft_printf("waiting for %i\n", data->ids->content);
 		waitpid(data->ids->content, NULL, 0);
 		data->ids = data->ids->next;
 	}
-	ft_printf("done waiting\n");
 }
