@@ -28,16 +28,15 @@ static void	process_input(char *line, struct sigaction sa, char *envp[],
 	t_list	*tokens;
 
 	tokens = tokenize_input(line, 0, NULL, NULL);
-	// print_lst(tokens);
-	// id = fork();
-	// if (id == 0)
-	// {
-	signal(SIGINT, SIG_DFL);
-	process_tokens(tokens, envp, data);
-		// ft_printf("exit? %i\n", data->exit_flag);
-	// 	exit(0);
-	// }
+	id = fork();
+	if (id == 0)
+	{
+		signal(SIGINT, SIG_DFL);
+		process_tokens(tokens, envp, data);
+		exit(0);
+	}
 	set_handler_two(&sa);
+	waitpid(id, NULL, 0);
 	ft_lstclear(&tokens, free_token);
 }
 
@@ -66,6 +65,8 @@ int main(int _argc, char *_argv[], char *envp[])
 
     data.envp = copy_envp(envp);
     data.exit_flag = 0;
+	data.fd = -1;
+	data.ids = NULL;
     while (1)
     {
         set_handler_one(&sa);
