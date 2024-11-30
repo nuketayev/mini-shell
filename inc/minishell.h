@@ -44,6 +44,8 @@ typedef struct s_data
 {
 	int		exit_flag;
 	char	**envp;
+	int		fd;
+	t_list	*ids;
 }			t_data;
 
 //signal_handler.c
@@ -68,7 +70,7 @@ t_list	*finish_tokenizing(t_list *first);
 char	*handle_quotes(char *line);
 
 //execute.c
-void	process_exec(t_list **command, t_token_type *first, t_data *data);
+t_data	*process_exec(t_list **command, t_token_type *first, t_data *data);
 
 //redirections.c
 int		redirect_input(char *filename);

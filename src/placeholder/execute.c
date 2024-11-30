@@ -28,7 +28,6 @@ static void	execute_last(char **envp, char **args, t_data *data)
         process_builtins(args, data);
         return;
     }
-
     cmd_path = get_command_path(envp, args[0]);
     id = fork();
     if (id == 0)
@@ -41,9 +40,11 @@ static void	execute_last(char **envp, char **args, t_data *data)
         waitpid(id, NULL, 0);
         free(cmd_path);
     }
+	if (data->fd != -1)
+		close(data->fd);
 }
 
-static void	execute(char **envp, char **args, t_data *data)
+static t_data	*execute(char **envp, char **args, t_data *data)
 {
     int		id;
     int		fd[2];
@@ -52,9 +53,8 @@ static void	execute(char **envp, char **args, t_data *data)
     if (is_command(args[0]))
     {
         process_builtins(args, data);
-        return;
+        return (data);
     }
-
     cmd_path = get_command_path(envp, args[0]);
     pipe(fd);
     id = fork();
@@ -67,11 +67,20 @@ static void	execute(char **envp, char **args, t_data *data)
     }
     else
     {
+    	if (data->ids == NULL)
+    		data->ids = ft_lstnew((void *)id);
+    	else
+    		ft_lstadd_back(&data->ids, ft_lstnew((void *)id));
+    	ft_printf("id: %i\n", id);
+    	ft_printf("data->id: %i\n", data->ids->content);
         close(fd[1]);
-        dup2(fd[0], STDIN_FILENO);
+    	dup2(fd[0], STDIN_FILENO);
+    	data->fd = fd[0];
         free(cmd_path);
-        waitpid(id, NULL, 0);
     }
+	if (data->fd != -1)
+		close(data->fd);
+	return (data);
 }
 
 static char	**ft_combine(t_list **command)
@@ -92,7 +101,7 @@ static char	**ft_combine(t_list **command)
 	return (args);
 }
 
-void	process_exec(t_list **command, t_token_type *first, t_data *data)
+t_data	*process_exec(t_list **command, t_token_type *first, t_data *data)
 {
 	char	**args;
 	int		fd;
@@ -115,4 +124,5 @@ void	process_exec(t_list **command, t_token_type *first, t_data *data)
 	if (fd != -1)
 		close(fd);
 	free_split(args);
+	return (data);
 }

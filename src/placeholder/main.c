@@ -43,9 +43,9 @@ static void	process_input(char *line, struct sigaction sa, char *envp[],
             // ft_printf("exit? %i\n", data->exit_flag);
             exit(0);
         }
-        waitpid(id, NULL, 0);
     }
     set_handler_two(&sa);
+    waitpid(id, NULL, 0);
     ft_lstclear(&tokens, free_token);
 }
 
@@ -74,6 +74,8 @@ int main(int _argc, char *_argv[], char *envp[])
 
     data.envp = copy_envp(envp);
     data.exit_flag = 0;
+	data.fd = -1;
+	data.ids = NULL;
     while (1)
     {
         set_handler_one(&sa);
