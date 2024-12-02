@@ -1,5 +1,4 @@
 #include "../../inc/minishell.h"
-#include <linux/limits.h>
 
 void	update_envp_pwd(char *new_pwd, char **envp)
 {

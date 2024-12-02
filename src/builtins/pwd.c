@@ -1,5 +1,4 @@
 #include "../../inc/minishell.h"
-#include <linux/limits.h>
 
 void	pwd(char **args, char *envp[])
 {

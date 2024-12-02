@@ -21,6 +21,7 @@
 # include <stdio.h>
 # include <stdlib.h>
 # include <unistd.h>
+#include <linux/limits.h>
 
 typedef enum e_token_type
 {
@@ -46,6 +47,7 @@ typedef struct s_data
 	char	**envp;
 	int		fd;
 	t_list	*ids;
+	int		last_exit_status;
 }			t_data;
 
 //signal_handler.c
@@ -54,6 +56,7 @@ void	set_handler_two(struct sigaction *sa);
 
 //parse_input.c
 t_list	*tokenize_input(char *line, int index, t_list *new, t_list *root);
+char **expand_args(char **args, char **envp);
 
 //pipex.c
 void	process_tokens(t_list *tokens, char *envp[], t_data *data);
@@ -62,6 +65,7 @@ void	process_tokens(t_list *tokens, char *envp[], t_data *data);
 char	*get_command_path(char **envp, char *argv);
 void	free_split(char **args);
 int		is_command(char *cmd);
+int		is_env_command(char *cmd);
 
 //get_last_token.c
 t_list	*finish_tokenizing(t_list *first);
