@@ -27,7 +27,6 @@ static void	handler_two(int signum)
 	else if (signum == SIGQUIT)
 	{
 		g_sigint_received = 127;
-		ft_putstr_fd("\n", STDOUT_FILENO);
 		return ;
 	}
 }
@@ -42,7 +41,7 @@ static void	handler_three(int signum)
 	if (signum == SIGQUIT)
 	{
 		g_sigint_received = 127;
-		ft_putstr_fd("Core dumped\n", STDOUT_FILENO);
+		ft_putstr_fd("Quit (Core dumped)\n", STDOUT_FILENO);
 		exit(SIGQUIT);
 	}
 }
