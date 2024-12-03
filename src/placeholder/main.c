@@ -38,7 +38,7 @@ static void	process_input(char *line, struct sigaction sa, char *envp[],
         id = fork();
         if (id == 0)
         {
-            signal(SIGINT, SIG_DFL);
+            set_handler_three(&sa);
             process_tokens(tokens, envp, data);
             // ft_printf("exit? %i\n", data->exit_flag);
             exit(0);

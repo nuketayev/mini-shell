@@ -53,6 +53,7 @@ typedef struct s_data
 //signal_handler.c
 void	set_handler_one(struct sigaction *sa);
 void	set_handler_two(struct sigaction *sa);
+void	set_handler_three(struct sigaction *sa);
 
 //parse_input.c
 t_list	*tokenize_input(char *line, int index, t_list *new, t_list *root);
