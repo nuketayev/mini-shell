@@ -43,4 +43,5 @@ void	process_tokens(t_list *tokens, char *envp[], t_data *data)
 		waitpid((__pid_t)(intptr_t)data->ids->content, NULL, 0);
 		data->ids = data->ids->next;
 	}
+	g_sigint_received = 0;
 }

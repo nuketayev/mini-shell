@@ -24,7 +24,7 @@ static char *expand_env_var(char *arg, char **envp)
     char *var_name;
     char *var_value;
 
-    if (arg[0] != '$')
+    if (arg[0] != '$' || ft_strncmp(arg, "$?", 3) == 0)
         return ft_strdup(arg);
 
     var_name = ft_strdup(arg + 1);

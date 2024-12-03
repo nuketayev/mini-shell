@@ -28,6 +28,8 @@ static void process_builtins(char **args, t_data *data, int is_pipe)
         env(data->envp);
     else if (ft_strncmp(args[0], "cd", 3) == 0 && !is_pipe)
         cd(args, data);
+	else if (ft_strncmp(args[0], "$?", 3) == 0)
+		print_exit_int();
 }
 
 static void execute_last(char **envp, char **args, t_data *data, int is_pipe)

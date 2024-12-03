@@ -85,7 +85,8 @@ int	is_command(char *cmd)
 		|| ft_strncmp(cmd, "export", 7) == 0
 		|| ft_strncmp(cmd, "unset", 6) == 0
 		|| ft_strncmp(cmd, "exit", 5) == 0
-		|| ft_strncmp(cmd, "env", 4) == 0)
+		|| ft_strncmp(cmd, "env", 4) == 0
+		|| ft_strncmp(cmd, "$?", 3) == 0)
 		return (1);
 	return (0);
 }

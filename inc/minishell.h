@@ -50,6 +50,8 @@ typedef struct s_data
 	int		last_exit_status;
 }			t_data;
 
+extern volatile sig_atomic_t g_sigint_received;
+
 //signal_handler.c
 void	set_handler_one(struct sigaction *sa);
 void	set_handler_two(struct sigaction *sa);
@@ -89,6 +91,7 @@ void	export(char **args, char ***envp);
 void	ft_exit(void);
 void	env(char *envp[]);
 void	echo(char **args, char *envp[]);
+void	print_exit_int();
 
 void	print_lst(t_list *lst);
 void	print_array(char **arr);

@@ -8,10 +8,11 @@ static void	handler_one(int signum)
 		rl_on_new_line();
 		rl_replace_line("", 0);
 		rl_redisplay();
+		g_sigint_received = 130;
 	}
 	else if (signum == SIGQUIT)
 	{
-		return ;
+		g_sigint_received = 127;
 	}
 
 }
@@ -21,9 +22,11 @@ static void	handler_two(int signum)
 	if (signum == SIGINT)
 	{
 		ft_putstr_fd("\n", STDOUT_FILENO);
+		g_sigint_received = 130;
 	}
 	else if (signum == SIGQUIT)
 	{
+		g_sigint_received = 127;
 		ft_putstr_fd("\n", STDOUT_FILENO);
 		return ;
 	}
@@ -33,10 +36,12 @@ static void	handler_three(int signum)
 {
 	if (signum == SIGINT)
 	{
+		g_sigint_received = 130;
 		exit(SIGINT);
 	}
-	else if (signum == SIGQUIT)
+	if (signum == SIGQUIT)
 	{
+		g_sigint_received = 127;
 		ft_putstr_fd("Core dumped\n", STDOUT_FILENO);
 		exit(SIGQUIT);
 	}
