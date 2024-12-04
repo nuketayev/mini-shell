@@ -81,7 +81,7 @@ t_data	*process_exec(t_list **command, t_token_type *first, t_data *data);
 
 //redirections.c
 int		redirect_input(char *filename);
-int		redirect_output(char *filename, t_token_type type);
+int		redirect_output(char *filename, t_token_type type, int isdup);
 void	here_doc(char *limiter);
 
 void	unset(char **args, char *envp[]);

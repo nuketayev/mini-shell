@@ -15,7 +15,7 @@ int	redirect_input(char *filename)
 	return (0);
 }
 
-int	redirect_output(char *filename, t_token_type type)
+int	redirect_output(char *filename, t_token_type type, int isdup)
 {
 	int	fd;
 
@@ -28,7 +28,8 @@ int	redirect_output(char *filename, t_token_type type)
 		ft_errprintf("wrong file kurwo\n");
 		return (-1);
 	}
-	dup2(fd, STDOUT_FILENO);
+	if (isdup)
+		dup2(fd, STDOUT_FILENO);
 	return (fd);
 }
 

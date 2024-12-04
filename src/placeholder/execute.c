@@ -125,6 +125,19 @@ static char	**ft_combine(t_list **command)
 	return (args);
 }
 
+static void	find_last_redirection(t_list **command)
+{
+	while ((((t_token *)(*command)->content)->type == TOKEN_R_OUTPUT
+	|| ((t_token *)(*command)->content)->type == TOKEN_A_OUTPUT)
+	&& (((t_token *)(*command)->next->next->content)->type == TOKEN_R_OUTPUT
+	|| ((t_token *)(*command)->next->next->content)->type == TOKEN_A_OUTPUT))
+	{
+		redirect_output(((t_token *)(*command)->next->content)->value,
+					((t_token *)(*command)->content)->type, 0);
+		*command = (*command)->next->next;
+	}
+}
+
 t_data	*process_exec(t_list **command, t_token_type *first, t_data *data)
 {
 	char	**args;
@@ -149,11 +162,12 @@ t_data	*process_exec(t_list **command, t_token_type *first, t_data *data)
     }
 	if (*first == TOKEN_LAST)
 	{
+		find_last_redirection(command);
 		if (((t_token *)(*command)->content)->type == TOKEN_R_OUTPUT
 			|| ((t_token *)(*command)->content)->type == TOKEN_A_OUTPUT)
 		{
 			fd = redirect_output(((t_token *)(*command)->next->content)->value,
-					((t_token *)(*command)->content)->type);
+					((t_token *)(*command)->content)->type, 1);
 			*command = (*command)->next->next;
 		}
 		execute_last(data->envp, args, data, is_pipe);
