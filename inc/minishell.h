@@ -50,9 +50,12 @@ typedef struct s_data
 	int		last_exit_status;
 }			t_data;
 
+extern volatile sig_atomic_t g_sigint_received;
+
 //signal_handler.c
 void	set_handler_one(struct sigaction *sa);
 void	set_handler_two(struct sigaction *sa);
+void	set_handler_three(struct sigaction *sa);
 
 //parse_input.c
 t_list	*tokenize_input(char *line, int index, t_list *new, t_list *root);
@@ -78,7 +81,7 @@ t_data	*process_exec(t_list **command, t_token_type *first, t_data *data);
 
 //redirections.c
 int		redirect_input(char *filename);
-int		redirect_output(char *filename, t_token_type type);
+int		redirect_output(char *filename, t_token_type type, int isdup);
 void	here_doc(char *limiter);
 
 void	unset(char **args, char *envp[]);
@@ -88,6 +91,7 @@ void	export(char **args, char ***envp);
 void	ft_exit(void);
 void	env(char *envp[]);
 void	echo(char **args, char *envp[]);
+void	print_exit_int();
 
 void	print_lst(t_list *lst);
 void	print_array(char **arr);

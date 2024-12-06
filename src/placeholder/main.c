@@ -12,6 +12,8 @@
 
 #include "../../inc/minishell.h"
 
+volatile sig_atomic_t g_sigint_received = 0;
+
 static void	free_token(void *lst)
 {
 	t_token	*token;
@@ -38,7 +40,7 @@ static void	process_input(char *line, struct sigaction sa, char *envp[],
         id = fork();
         if (id == 0)
         {
-            signal(SIGINT, SIG_DFL);
+            set_handler_three(&sa);
             process_tokens(tokens, envp, data);
             // ft_printf("exit? %i\n", data->exit_flag);
             exit(0);

@@ -37,10 +37,17 @@ void	process_tokens(t_list *tokens, char *envp[], t_data *data)
 			here_doc(((t_token *)tokens->next->content)->value);
 			tokens = tokens->next->next;
 		}
+		else if (((t_token *)tokens->content)->type == TOKEN_R_OUTPUT
+			|| (((t_token *)tokens->content)->type == TOKEN_A_OUTPUT))
+		{
+			redirect_output(((t_token *)tokens->next->content)->value, ((t_token *)tokens->content)->type, 0);
+			tokens = tokens->next->next;
+		}
 	}
 	while (data->ids)
 	{
 		waitpid((__pid_t)(intptr_t)data->ids->content, NULL, 0);
 		data->ids = data->ids->next;
 	}
+	g_sigint_received = 0;
 }
