@@ -1,15 +1,3 @@
-/* ************************************************************************** */
-/*                                                                            */
-/*                                                        :::      ::::::::   */
-/*   expand.c                                           :+:      :+:    :+:   */
-/*                                                    +:+ +:+         +:+     */
-/*   By: anuketay <anuketay@student.42.fr>          +#+  +:+       +#+        */
-/*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/12/07 13:23:53 by anuketay          #+#    #+#             */
-/*   Updated: 2024/12/07 13:23:53 by anuketay         ###   ########.fr       */
-/*                                                                            */
-/* ************************************************************************** */
-
 #include "../../inc/minishell.h"
 
 static char *get_env_value(char *var_name, char **envp)
@@ -30,17 +18,28 @@ static char *get_env_value(char *var_name, char **envp)
     return var_value;
 }
 
+static int is_expansion(char *arg)
+{
+    if (arg[0] != '$' || ft_strncmp(arg, "$?", 3) == 0 || ft_strncmp(arg, "$", 2) == 0)
+        return 1;
+    if (arg[0] == '\'' && arg[ft_strlen(arg) - 1] == '\'')
+        return 1;
+    return 0;
+}
+
 static char *expand_env_var(char *arg, char **envp)
 {
     char *expanded_arg;
     char *var_name;
     char *var_value;
 
-    if (arg[0] != '$' || ft_strncmp(arg, "$?", 3) == 0)
+    if (is_expansion(arg))
         return ft_strdup(arg);
 
     var_name = ft_strdup(arg + 1);
+    ft_printf("var_name: %s\n", var_name);
     var_value = get_env_value(var_name, envp);
+    ft_printf("var_value: %s\n", var_value);
 
     if (var_value)
         expanded_arg = ft_strdup(var_value);
