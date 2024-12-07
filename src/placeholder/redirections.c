@@ -67,9 +67,9 @@ static int	get_another_line(char **line)
 		result = read(0, &c, 1);
 	}
 	buffer[i] = '\n';
-	buffer[++i] = '\0';
+	i++;
+	buffer[i] = 0;
 	*line = buffer;
-	free(buffer);
 	return (result);
 }
 
@@ -88,8 +88,12 @@ void	here_doc(char *limiter)
 		while (get_another_line(&line))
 		{
 			if (ft_strncmp(line, limiter, ft_strlen(limiter)) == 0)
+			{
+				free(line);
 				exit(EXIT_SUCCESS);
+			}
 			write(fd[1], line, ft_strlen(line));
+			free(line);
 		}
 	}
 	else

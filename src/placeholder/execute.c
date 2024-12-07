@@ -65,9 +65,9 @@ static void execute_last(char **envp, char **args, t_data *data, int is_pipe)
     else
     {
         waitpid(id, NULL, 0);
+    	close(STDIN_FILENO);
         free(cmd_path);
     }
-
     free_split(expanded_args);
 }
 
