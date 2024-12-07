@@ -62,7 +62,6 @@ static char *get_env_value(char *var_name, char **envp)
         }
         i++;
     }
-
 	i = 0;
 	while (arg[i])
 	{
