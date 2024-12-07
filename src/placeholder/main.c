@@ -6,7 +6,7 @@
 /*   By: anuketay <anuketay@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/16 16:26:00 by anuketay          #+#    #+#             */
-/*   Updated: 2024/11/16 16:42:03 by anuketay         ###   ########.fr       */
+/*   Updated: 2024/12/07 13:25:51 by anuketay         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,7 +42,6 @@ static void	process_input(char *line, struct sigaction sa, char *envp[],
         {
             set_handler_three(&sa);
             process_tokens(tokens, envp, data);
-            // ft_printf("exit? %i\n", data->exit_flag);
             exit(0);
         }
     }

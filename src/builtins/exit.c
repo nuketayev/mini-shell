@@ -1,8 +1,17 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   exit.c                                             :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: anuketay <anuketay@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2024/12/07 13:24:51 by anuketay          #+#    #+#             */
+/*   Updated: 2024/12/07 13:25:34 by anuketay         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "../../inc/minishell.h"
 
-//this does not work, exit_flag is still 0 in parent
-//test this in bash because it looks like if it's piped it's
-//not supposed to exit somehow
 void	ft_exit(void)
 {
     printf("exit\n");

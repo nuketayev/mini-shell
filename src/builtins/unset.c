@@ -1,14 +1,17 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   unset.c                                            :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: anuketay <anuketay@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2024/12/07 13:25:11 by anuketay          #+#    #+#             */
+/*   Updated: 2024/12/07 13:25:25 by anuketay         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "../../inc/minishell.h"
 
-//challenges:
-//when it's piped to another function it does not do anything anything
-//has to be set in parent, I thought adding the pointer to data might work,
-//but it only chnges in child
-//workaround is to create a hidden file and putting the string
-//of the env variables there and later parent reads from that file
-//but I am not sure if it's correct approach
-//also you can look into the allowed functions cause maybe
-//they have the answer to the issue
 static void	remove_env_var(char *var, char **envp)
 {
     int		i;
