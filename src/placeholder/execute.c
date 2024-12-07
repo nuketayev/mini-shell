@@ -6,7 +6,7 @@
 /*   By: anuketay <anuketay@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/16 16:26:00 by anuketay          #+#    #+#             */
-/*   Updated: 2024/12/07 17:29:56 by anuketay         ###   ########.fr       */
+/*   Updated: 2024/12/07 18:29:11 by anuketay         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -121,9 +121,9 @@ static char	**ft_combine(t_list **command)
 static void	find_last_redirection(t_list **command)
 {
 	while ((((t_token *)(*command)->content)->type == TOKEN_R_OUTPUT
-			|| ((t_token *)(*command)->content)->type == TOKEN_A_OUTPUT)
+		|| ((t_token *)(*command)->content)->type == TOKEN_A_OUTPUT)
 		&& (((t_token *)(*command)->next->next->content)->type == TOKEN_R_OUTPUT
-			|| ((t_token *)(*command)->next->next->content)->type == TOKEN_A_OUTPUT))
+		|| ((t_token *)(*command)->next->next->content)->type == TOKEN_A_OUTPUT))
 	{
 		redirect_output(((t_token *)(*command)->next->content)->value,
 			((t_token *)(*command)->content)->type, 0);
