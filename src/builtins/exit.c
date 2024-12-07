@@ -14,6 +14,6 @@
 
 void	ft_exit(void)
 {
-    printf("exit\n");
+    ft_printf("exit\n");
     exit(0);
 }
