@@ -34,41 +34,36 @@ static void process_builtins(char **args, t_data *data, int is_pipe)
 
 static void execute_last(char **envp, char **args, t_data *data, int is_pipe)
 {
-    int id;
-    char *cmd_path;
-    char **expanded_args;
+	int id;
+	char *cmd_path;
 
-    expanded_args = expand_args(args, envp);
+	if (is_command(args[0]))
+	{
+		process_builtins(args, data, is_pipe);
+		return;
+	}
 
-    if (is_command(expanded_args[0]))
-    {
-        process_builtins(expanded_args, data, is_pipe);
-        free_split(expanded_args);
-        return;
-    }
 
-    if (expanded_args[0][0] == '/')
-    {
-        cmd_path = ft_strdup(expanded_args[0]);
-    }
-    else
-    {
-        cmd_path = get_command_path(envp, expanded_args[0]);
-    }
+	if (args[0][0] == '/')
+	{
+		cmd_path = ft_strdup(args[0]);
+	}
+	else
+	{
+		cmd_path = get_command_path(envp, args[0]);
+	}
 
-    id = fork();
-    if (id == 0)
-    {
-        if (execve(cmd_path, expanded_args, envp) == -1)
-            ft_printf("%s: command not found\n", expanded_args[0]);
-    }
-    else
-    {
-        waitpid(id, NULL, 0);
-    	close(STDIN_FILENO);
-        free(cmd_path);
-    }
-    free_split(expanded_args);
+	id = fork();
+	if (id == 0)
+	{
+		if (execve(cmd_path, args, envp) == -1)
+			ft_printf("%s: command not found\n", args[0]);
+	}
+	else
+	{
+		waitpid(id, NULL, 0);
+		free(cmd_path);
+	}
 }
 
 static t_data	*execute(char **envp, char **args, t_data *data, int is_pipe)
