@@ -6,13 +6,13 @@
 /*   By: anuketay <anuketay@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/07 13:24:58 by anuketay          #+#    #+#             */
-/*   Updated: 2024/12/07 13:24:58 by anuketay         ###   ########.fr       */
+/*   Updated: 2024/12/07 17:33:32 by anuketay         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../inc/minishell.h"
 
-void	print_exit_int()
+void	print_exit_int(void)
 {
 	ft_printf("%i\n", g_sigint_received);
 }

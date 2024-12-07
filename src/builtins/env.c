@@ -6,7 +6,7 @@
 /*   By: anuketay <anuketay@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/07 13:24:46 by anuketay          #+#    #+#             */
-/*   Updated: 2024/12/07 13:24:46 by anuketay         ###   ########.fr       */
+/*   Updated: 2024/12/07 17:28:53 by anuketay         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,9 +20,9 @@ void	env(char *envp[])
 	if (!envp)
 	{
 		perror("env");
-		return;
+		return ;
 	}
-	while(envp[index])
+	while (envp[index])
 	{
 		ft_printf("%s\n", envp[index]);
 		index++;

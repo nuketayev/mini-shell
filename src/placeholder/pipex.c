@@ -19,12 +19,14 @@ void	process_tokens(t_list *tokens, char *envp[], t_data *data)
 		if (((t_token *)tokens->content)->type == TOKEN_TEXT
 			|| ((t_token *)tokens->content)->type == TOKEN_LAST)
 		{
-			data = process_exec(&tokens, &((t_token *)tokens->content)->type, data);
+			data = process_exec(&tokens, &((t_token *)tokens->content)->type,
+					data);
 		}
 		else if (((t_token *)tokens->content)->type == TOKEN_PIPE)
 		{
 			tokens = tokens->next;
-			data = process_exec(&tokens, &((t_token *)tokens->content)->type, data);
+			data = process_exec(&tokens, &((t_token *)tokens->content)->type,
+					data);
 		}
 		else if (((t_token *)tokens->content)->type == TOKEN_R_INPUT)
 		{
@@ -40,7 +42,8 @@ void	process_tokens(t_list *tokens, char *envp[], t_data *data)
 		else if (((t_token *)tokens->content)->type == TOKEN_R_OUTPUT
 			|| (((t_token *)tokens->content)->type == TOKEN_A_OUTPUT))
 		{
-			redirect_output(((t_token *)tokens->next->content)->value, ((t_token *)tokens->content)->type, 0);
+			redirect_output(((t_token *)tokens->next->content)->value,
+				((t_token *)tokens->content)->type, 0);
 			tokens = tokens->next->next;
 		}
 	}

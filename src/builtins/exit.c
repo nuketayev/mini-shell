@@ -6,7 +6,7 @@
 /*   By: anuketay <anuketay@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/07 13:24:51 by anuketay          #+#    #+#             */
-/*   Updated: 2024/12/07 13:25:34 by anuketay         ###   ########.fr       */
+/*   Updated: 2024/12/07 17:23:01 by anuketay         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,6 @@
 
 void	ft_exit(void)
 {
-    printf("exit\n");
-    exit(0);
+	printf("exit\n");
+	exit(0);
 }
