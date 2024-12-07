@@ -84,7 +84,7 @@ static char **copy_envp(char **envp)
     if (!new_envp)
         return (NULL);
     for (i = 0; envp[i]; i++)
-        new_envp[i] = ft_strdup(envp[i]);
+    	new_envp[i] = ft_strdup(envp[i]);
     new_envp[i] = NULL;
     return (new_envp);
 }
@@ -112,6 +112,6 @@ int main(int _argc, char *_argv[], char *envp[])
         }
         free(line);
     }
-    free_split(data.envp);
+	free_split(data.envp);
     return (0);
 }

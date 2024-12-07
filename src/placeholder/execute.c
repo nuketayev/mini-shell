@@ -43,6 +43,7 @@ static void execute_last(char **envp, char **args, t_data *data, int is_pipe)
 		return;
 	}
 
+
 	if (args[0][0] == '/')
 	{
 		cmd_path = ft_strdup(args[0]);
