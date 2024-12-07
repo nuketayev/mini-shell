@@ -6,7 +6,7 @@
 /*   By: anuketay <anuketay@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/07 13:24:22 by anuketay          #+#    #+#             */
-/*   Updated: 2024/12/07 13:24:23 by anuketay         ###   ########.fr       */
+/*   Updated: 2024/12/07 17:22:01 by anuketay         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,7 +26,6 @@ static void	handler_one(int signum)
 	{
 		g_sigint_received = 131;
 	}
-
 }
 
 static void	handler_two(int signum)
