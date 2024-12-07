@@ -19,7 +19,7 @@ void	print_array(char **arr)
 	i = 0;
 	while (arr[i])
 	{
-		ft_printf("%s\n", arr);
+		ft_printf("%s\n", arr[i]);
 		i++;
 	}
 }

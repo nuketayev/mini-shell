@@ -14,6 +14,8 @@
 
 void	process_tokens(t_list *tokens, char *envp[], t_data *data)
 {
+	t_list	*to_free;
+
 	while (((t_token *)tokens->content)->type != TOKEN_END)
 	{
 		if (((t_token *)tokens->content)->type == TOKEN_TEXT
@@ -50,7 +52,9 @@ void	process_tokens(t_list *tokens, char *envp[], t_data *data)
 	while (data->ids)
 	{
 		waitpid((__pid_t)(intptr_t)data->ids->content, NULL, 0);
+		to_free = data->ids;
 		data->ids = data->ids->next;
+		free(to_free);
 	}
 	g_sigint_received = 0;
 }

@@ -24,6 +24,9 @@ $(NAME): $(OBJECTS) $(LIB) $(LDFLAGS)
 norm:
 	norminette $(SOURCES) inc/minishell.h
 
+valgrind:
+	valgrind --leak-check=full --show-leak-kinds=all --suppressions=minishell.supp ./minishell
+
 %.o: %.c
 	@cc $(CFLAGS) $(HEADERS) -o $@ $<
 
