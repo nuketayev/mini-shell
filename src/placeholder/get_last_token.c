@@ -50,3 +50,12 @@ t_list	*finish_tokenizing(t_list *first)
 	find_last(current, first);
 	return (first);
 }
+
+void	free_token(void *lst)
+{
+	t_token	*token;
+
+	token = (t_token *)lst;
+	free(token->value);
+	free(token);
+}

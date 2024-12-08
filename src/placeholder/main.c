@@ -14,15 +14,6 @@
 
 volatile sig_atomic_t	g_sigint_received = 0;
 
-static void	free_token(void *lst)
-{
-	t_token	*token;
-
-	token = (t_token *)lst;
-	free(token->value);
-	free(token);
-}
-
 static char	*join_args(char **args)
 {
 	char	*joined_args;
@@ -40,17 +31,12 @@ static char	*join_args(char **args)
 	return (joined_args);
 }
 
-static void	process_input(char *line, struct sigaction sa, char *envp[],
-		t_data *data)
+static void	process_line(t_list *tokens, char *envp[],
+		t_data *data, struct sigaction sa)
 {
-	int		id;
-	t_list	*tokens;
-	char	**expanded_args;
-	char	*joined_args;
+	int	id;
 
-	expanded_args = expand_args(ft_split(line, ' '), envp);
-	joined_args = join_args(expanded_args);
-	tokens = tokenize_input(joined_args, 0, NULL, NULL);
+	id = 0;
 	if (is_env_command(((t_token *)tokens->content)->value))
 	{
 		signal(SIGINT, SIG_DFL);
@@ -67,8 +53,23 @@ static void	process_input(char *line, struct sigaction sa, char *envp[],
 		}
 	}
 	set_handler_two(&sa);
-	waitpid(id, NULL, 0);
+	if (id)
+		waitpid(id, NULL, 0);
 	ft_lstclear(&tokens, free_token);
+}
+
+static void	process_input(char *line, struct sigaction sa, char *envp[],
+		t_data *data)
+{
+	t_list	*tokens;
+	char	**expanded_args;
+	char	*joined_args;
+
+	expanded_args = expand_args(ft_split(line, ' '), envp);
+	joined_args = join_args(expanded_args);
+	tokens = tokenize_input(joined_args, 0, NULL, NULL);
+	if (tokens)
+		process_line(tokens, envp, data, sa);
 }
 
 static char	**copy_envp(char **envp)
