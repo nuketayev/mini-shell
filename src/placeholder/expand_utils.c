@@ -30,6 +30,7 @@ char	*remove_quotes(char *var_name)
 {
 	char	*new_str;
 	int		i;
+	int		offset;
 
 	new_str = malloc(ft_strlen(var_name) * sizeof(char));
 	if (!new_str)
@@ -38,11 +39,12 @@ char	*remove_quotes(char *var_name)
 		i = 1;
 	else
 		i = 0;
+	offset = i;
 	while (var_name[i] && var_name[i] != '\"')
 	{
-		new_str[i - 1] = var_name[i];
+		new_str[i - offset] = var_name[i];
 		i++;
 	}
-	new_str[i - 1] = '\0';
+	new_str[i - offset] = '\0';
 	return (new_str);
 }
