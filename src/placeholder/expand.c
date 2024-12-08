@@ -33,6 +33,22 @@ static char	*get_env_value(char *var_name, char **envp)
 	return (var_value);
 }
 
+int	count_chars(char *arg, char c)
+{
+	int	i;
+	int	count;
+
+	i = 0;
+	count = 0;
+	while (arg[i])
+	{
+		if (arg[i] == c)
+			count++;
+		i++;
+	}
+	return (count);
+}
+
 static int	is_expansion(char *arg, int *single_quote)
 {
 	int	i;
@@ -45,7 +61,7 @@ static int	is_expansion(char *arg, int *single_quote)
 	}
 	if (arg[0] == '\'' || arg[ft_strlen(arg) - 1] == '\'')
 	{
-		*single_quote = 1;
+		*single_quote += count_chars(arg, '\'');
 		return (1);
 	}
 	if (i == -1)
@@ -88,11 +104,15 @@ char	**expand_args(char **args, char **envp)
 	i = 0;
 	while (args[i])
 	{
-		expanded_args[i] = expand_env_var(args[i], envp, &single_quote);
-		i++;
-		if (args[i] && single_quote && ft_findchar(args[i], '\'') != -1)
+		if (args[i] && single_quote % 2 == 0)
 		{
+			single_quote += count_chars(args[i], '\'');
 			expanded_args[i] = ft_strdup(args[i]);
+			i++;
+		}
+		else
+		{
+			expanded_args[i] = expand_env_var(args[i], envp, &single_quote);
 			i++;
 		}
 	}
