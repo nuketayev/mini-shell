@@ -6,23 +6,17 @@
 /*   By: anuketay <anuketay@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/07 13:24:55 by anuketay          #+#    #+#             */
-/*   Updated: 2024/12/07 17:34:38 by anuketay         ###   ########.fr       */
+/*   Updated: 2024/12/08 13:20:34 by anuketay         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../inc/minishell.h"
 
-static void	add_or_update_env(char *var, char ***envp)
+static void	update_existing_env(char *var, char ***envp, char *name,
+		size_t name_len)
 {
-	int		i;
-	char	*name;
-	size_t	name_len;
-	char	**new_envp;
+	int	i;
 
-	name_len = 0;
-	while (var[name_len] && var[name_len] != '=')
-		name_len++;
-	name = ft_substr(var, 0, name_len);
 	i = 0;
 	while ((*envp)[i])
 	{
@@ -36,6 +30,16 @@ static void	add_or_update_env(char *var, char ***envp)
 		}
 		i++;
 	}
+}
+
+static void	add_new_env(char *var, char ***envp, char *name)
+{
+	int		i;
+	char	**new_envp;
+
+	i = 0;
+	while ((*envp)[i])
+		i++;
 	new_envp = malloc((i + 2) * sizeof(char *));
 	i = 0;
 	while ((*envp)[i])
@@ -50,37 +54,27 @@ static void	add_or_update_env(char *var, char ***envp)
 	free(name);
 }
 
+static void	add_or_update_env(char *var, char ***envp)
+{
+	char	*name;
+	size_t	name_len;
+
+	name_len = 0;
+	while (var[name_len] && var[name_len] != '=')
+		name_len++;
+	name = ft_substr(var, 0, name_len);
+	update_existing_env(var, envp, name, name_len);
+	add_new_env(var, envp, name);
+}
+
 void	export(char **args, char ***envp)
 {
-	int		i;
-	int		j;
-	char	*temp;
+	int	i;
 
 	if (!args[1])
 	{
-		i = 0;
-		while ((*envp)[i])
-		{
-			j = i + 1;
-			while ((*envp)[j])
-			{
-				if (ft_strncmp((*envp)[i], (*envp)[j],
-						ft_strlen((*envp)[i])) > 0)
-				{
-					temp = (*envp)[i];
-					(*envp)[i] = (*envp)[j];
-					(*envp)[j] = temp;
-				}
-				j++;
-			}
-			i++;
-		}
-		i = 0;
-		while ((*envp)[i])
-		{
-			ft_printf("declare -x %s\n", (*envp)[i]);
-			i++;
-		}
+		sort_envp(envp);
+		print_sorted_envp(envp);
 	}
 	else
 	{

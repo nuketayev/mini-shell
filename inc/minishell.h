@@ -6,7 +6,7 @@
 /*   By: anuketay <anuketay@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/16 16:21:43 by anuketay          #+#    #+#             */
-/*   Updated: 2024/12/07 17:24:14 by anuketay         ###   ########.fr       */
+/*   Updated: 2024/12/08 13:49:44 by anuketay         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,15 +56,27 @@ extern volatile sig_atomic_t	g_sigint_received;
 void							set_handler_one(struct sigaction *sa);
 void							set_handler_two(struct sigaction *sa);
 void							set_handler_three(struct sigaction *sa);
+void							handler_one(int signum);
+void							handler_two(int signum);
+void							handler_three(int signum);
 
 // parse_input.c
 t_list							*tokenize_input(char *line, int index,
 									t_list *new, t_list *root);
 char							**expand_args(char **args, char **envp);
+int								find_dollar(char *arg);
+char							*remove_quotes(char *var_name);
 
-// pipex.c
+// process_tokens.c
 void							process_tokens(t_list *tokens, char *envp[],
 									t_data *data);
+void							handle_token_exec(t_list **tokens,
+									t_data **data);
+void							handle_token_pipe(t_list **tokens,
+									t_data **data);
+void							handle_token_input(t_list **tokens);
+void							handle_token_here_doc(t_list **tokens);
+void							handle_token_output(t_list **tokens);
 
 // pipex_utils.c
 char							*get_command_path(char **envp, char *argv);
@@ -92,6 +104,8 @@ void							unset(char **args, char *envp[]);
 void							pwd(char **args, char *envp[]);
 void							cd(char **args, t_data *data);
 void							export(char **args, char ***envp);
+void							sort_envp(char ***envp);
+void							print_sorted_envp(char ***envp);
 void							ft_exit(void);
 void							env(char *envp[]);
 void							echo(char **args, char *envp[]);
