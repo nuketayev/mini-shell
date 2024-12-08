@@ -6,13 +6,13 @@
 /*   By: anuketay <anuketay@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/07 13:24:55 by anuketay          #+#    #+#             */
-/*   Updated: 2024/12/08 13:20:34 by anuketay         ###   ########.fr       */
+/*   Updated: 2024/12/08 14:24:24 by anuketay         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../inc/minishell.h"
 
-static void	update_existing_env(char *var, char ***envp, char *name,
+static char	*update_existing_env(char *var, char ***envp, char *name,
 		size_t name_len)
 {
 	int	i;
@@ -26,10 +26,12 @@ static void	update_existing_env(char *var, char ***envp, char *name,
 			free((*envp)[i]);
 			(*envp)[i] = ft_strdup(var);
 			free(name);
-			return ;
+			name = NULL;
+			return name;
 		}
 		i++;
 	}
+	return name;
 }
 
 static void	add_new_env(char *var, char ***envp, char *name)
@@ -59,12 +61,15 @@ static void	add_or_update_env(char *var, char ***envp)
 	char	*name;
 	size_t	name_len;
 
+	name = NULL;
 	name_len = 0;
 	while (var[name_len] && var[name_len] != '=')
 		name_len++;
 	name = ft_substr(var, 0, name_len);
-	update_existing_env(var, envp, name, name_len);
-	add_new_env(var, envp, name);
+	name = update_existing_env(var, envp, name, name_len);
+	if (name != NULL)
+		add_new_env(var, envp, name);
+	return ;
 }
 
 void	export(char **args, char ***envp)
