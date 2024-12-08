@@ -6,7 +6,7 @@
 /*   By: anuketay <anuketay@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/07 13:24:55 by anuketay          #+#    #+#             */
-/*   Updated: 2024/12/08 14:24:24 by anuketay         ###   ########.fr       */
+/*   Updated: 2024/12/08 14:50:04 by anuketay         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,11 +27,11 @@ static char	*update_existing_env(char *var, char ***envp, char *name,
 			(*envp)[i] = ft_strdup(var);
 			free(name);
 			name = NULL;
-			return name;
+			return (name);
 		}
 		i++;
 	}
-	return name;
+	return (name);
 }
 
 static void	add_new_env(char *var, char ***envp, char *name)

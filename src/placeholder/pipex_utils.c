@@ -6,7 +6,7 @@
 /*   By: anuketay <anuketay@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/31 21:46:47 by gharazka          #+#    #+#             */
-/*   Updated: 2024/11/16 16:10:22 by anuketay         ###   ########.fr       */
+/*   Updated: 2024/12/08 14:59:19 by anuketay         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -93,9 +93,11 @@ int	is_command(char *cmd)
 
 int	is_env_command(char *cmd)
 {
-	if (ft_strncmp(cmd, "export", 7) == 0
+	if (ft_strncmp(cmd, "cd", 3) == 0
+		|| ft_strncmp(cmd, "export", 7) == 0
 		|| ft_strncmp(cmd, "unset", 6) == 0
-		|| ft_strncmp(cmd, "env", 4) == 0)
+		|| ft_strncmp(cmd, "exit", 5) == 0
+		|| ft_strncmp(cmd, "$?", 3) == 0)
 		return (1);
 	return (0);
 }
