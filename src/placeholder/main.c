@@ -6,7 +6,7 @@
 /*   By: anuketay <anuketay@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/16 16:26:00 by anuketay          #+#    #+#             */
-/*   Updated: 2024/12/07 17:26:40 by anuketay         ###   ########.fr       */
+/*   Updated: 2024/12/08 15:20:51 by anuketay         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,7 +51,7 @@ static void	process_input(char *line, struct sigaction sa, char *envp[],
 	expanded_args = expand_args(ft_split(line, ' '), envp);
 	joined_args = join_args(expanded_args);
 	tokens = tokenize_input(joined_args, 0, NULL, NULL);
-	if (is_command(((t_token *)tokens->content)->value))
+	if (is_env_command(((t_token *)tokens->content)->value))
 	{
 		signal(SIGINT, SIG_DFL);
 		process_tokens(tokens, envp, data);

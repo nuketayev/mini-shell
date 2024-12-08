@@ -6,7 +6,7 @@
 /*   By: anuketay <anuketay@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/16 16:26:00 by anuketay          #+#    #+#             */
-/*   Updated: 2024/12/07 18:29:11 by anuketay         ###   ########.fr       */
+/*   Updated: 2024/12/08 15:25:39 by anuketay         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -70,7 +70,7 @@ static t_data	*execute(char **envp, char **args, t_data *data, int is_pipe)
 	int		fd[2];
 	char	*cmd_path;
 
-	if (is_command(args[0]))
+	if (is_env_command(args[0]))
 	{
 		process_builtins(args, data, is_pipe);
 		return (data);
@@ -83,7 +83,12 @@ static t_data	*execute(char **envp, char **args, t_data *data, int is_pipe)
 		close(fd[0]);
 		dup2(fd[1], STDOUT_FILENO);
 		close(fd[1]);
-		if (execve(cmd_path, args, envp) == -1)
+		if (is_command(args[0]))
+		{
+			process_builtins(args, data, is_pipe);
+			exit(0);
+		}
+		else if (execve(cmd_path, args, envp) == -1)
 			ft_printf("%s: command not found\n", args[0]);
 	}
 	else
@@ -121,9 +126,9 @@ static char	**ft_combine(t_list **command)
 static void	find_last_redirection(t_list **command)
 {
 	while ((((t_token *)(*command)->content)->type == TOKEN_R_OUTPUT
-		|| ((t_token *)(*command)->content)->type == TOKEN_A_OUTPUT)
+			|| ((t_token *)(*command)->content)->type == TOKEN_A_OUTPUT)
 		&& (((t_token *)(*command)->next->next->content)->type == TOKEN_R_OUTPUT
-		|| ((t_token *)(*command)->next->next->content)->type == TOKEN_A_OUTPUT))
+			|| ((t_token *)(*command)->next->next->content)->type == TOKEN_A_OUTPUT))
 	{
 		redirect_output(((t_token *)(*command)->next->content)->value,
 			((t_token *)(*command)->content)->type, 0);
