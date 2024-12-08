@@ -6,7 +6,7 @@
 /*   By: anuketay <anuketay@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/07 13:24:37 by anuketay          #+#    #+#             */
-/*   Updated: 2024/12/07 17:37:12 by anuketay         ###   ########.fr       */
+/*   Updated: 2024/12/08 13:00:50 by anuketay         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,10 +36,9 @@ void	update_envp_pwd(char *new_pwd, char **envp)
 	}
 }
 
-void	cd(char **args, t_data *data)
+static char	*get_cd_path(char **args)
 {
 	char	*path;
-	char	cwd[PATH_MAX];
 
 	if (!args[1] || ft_strncmp(args[1], "~", 1) == 0)
 	{
@@ -47,13 +46,22 @@ void	cd(char **args, t_data *data)
 		if (!path)
 		{
 			ft_printf("cd: HOME not set\n");
-			return ;
+			return (NULL);
 		}
 	}
 	else
 	{
 		path = args[1];
 	}
+	return (path);
+}
+
+void	cd(char **args, t_data *data)
+{
+	char	*path;
+	char	cwd[PATH_MAX];
+
+	path = get_cd_path(args);
 	if (chdir(path) != 0)
 	{
 		perror("cd");

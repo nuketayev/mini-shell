@@ -6,7 +6,7 @@
 /*   By: anuketay <anuketay@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/07 13:24:17 by anuketay          #+#    #+#             */
-/*   Updated: 2024/12/07 13:24:18 by anuketay         ###   ########.fr       */
+/*   Updated: 2024/12/08 13:45:53 by anuketay         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -73,29 +73,33 @@ static int	get_another_line(char **line)
 	return (result);
 }
 
+static void	read_lines(int fd[2], char *limiter)
+{
+	char	*line;
+
+	close(fd[0]);
+	while (get_another_line(&line))
+	{
+		if (ft_strncmp(line, limiter, ft_strlen(limiter)) == 0)
+		{
+			free(line);
+			exit(EXIT_SUCCESS);
+		}
+		write(fd[1], line, ft_strlen(line));
+		free(line);
+	}
+}
+
 void	here_doc(char *limiter)
 {
 	pid_t	reader;
 	int		fd[2];
-	char	*line;
 
 	if (pipe(fd) == -1)
 		ft_errprintf("wrong pipe man\n");
 	reader = fork();
 	if (reader == 0)
-	{
-		close(fd[0]);
-		while (get_another_line(&line))
-		{
-			if (ft_strncmp(line, limiter, ft_strlen(limiter)) == 0)
-			{
-				free(line);
-				exit(EXIT_SUCCESS);
-			}
-			write(fd[1], line, ft_strlen(line));
-			free(line);
-		}
-	}
+		read_lines(fd, limiter);
 	else
 	{
 		close(fd[1]);
