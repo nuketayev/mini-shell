@@ -6,7 +6,7 @@
 /*   By: anuketay <anuketay@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/16 16:21:43 by anuketay          #+#    #+#             */
-/*   Updated: 2024/12/08 13:49:44 by anuketay         ###   ########.fr       */
+/*   Updated: 2024/12/08 16:17:32 by anuketay         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,6 +48,7 @@ typedef struct s_data
 	int							fd;
 	t_list						*ids;
 	int							last_exit_status;
+	int							is_pipe;
 }								t_data;
 
 extern volatile sig_atomic_t	g_sigint_received;

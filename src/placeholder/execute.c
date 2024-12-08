@@ -6,13 +6,13 @@
 /*   By: anuketay <anuketay@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/16 16:26:00 by anuketay          #+#    #+#             */
-/*   Updated: 2024/12/08 15:25:39 by anuketay         ###   ########.fr       */
+/*   Updated: 2024/12/08 16:31:30 by anuketay         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../inc/minishell.h"
 
-static void	process_builtins(char **args, t_data *data, int is_pipe)
+static void	process_builtins(char **args, t_data *data)
 {
 	if (ft_strncmp(args[0], "pwd", 4) == 0)
 		pwd(args, data->envp);
@@ -26,20 +26,22 @@ static void	process_builtins(char **args, t_data *data, int is_pipe)
 		ft_exit();
 	else if (ft_strncmp(args[0], "env", 4) == 0)
 		env(data->envp);
-	else if (ft_strncmp(args[0], "cd", 3) == 0 && !is_pipe)
+	else if (ft_strncmp(args[0], "cd", 3) == 0 && !data->is_pipe)
+	{
 		cd(args, data);
+	}
 	else if (ft_strncmp(args[0], "$?", 3) == 0)
 		print_exit_int();
 }
 
-static void	execute_last(char **envp, char **args, t_data *data, int is_pipe)
+static void	execute_last(char **envp, char **args, t_data *data)
 {
 	int		id;
 	char	*cmd_path;
 
 	if (is_command(args[0]))
 	{
-		process_builtins(args, data, is_pipe);
+		process_builtins(args, data);
 		return ;
 	}
 	if (args[0][0] == '/')
@@ -64,7 +66,7 @@ static void	execute_last(char **envp, char **args, t_data *data, int is_pipe)
 	}
 }
 
-static t_data	*execute(char **envp, char **args, t_data *data, int is_pipe)
+static t_data	*execute(char **envp, char **args, t_data *data)
 {
 	int		id;
 	int		fd[2];
@@ -72,7 +74,7 @@ static t_data	*execute(char **envp, char **args, t_data *data, int is_pipe)
 
 	if (is_env_command(args[0]))
 	{
-		process_builtins(args, data, is_pipe);
+		process_builtins(args, data);
 		return (data);
 	}
 	cmd_path = get_command_path(envp, args[0]);
@@ -85,7 +87,7 @@ static t_data	*execute(char **envp, char **args, t_data *data, int is_pipe)
 		close(fd[1]);
 		if (is_command(args[0]))
 		{
-			process_builtins(args, data, is_pipe);
+			process_builtins(args, data);
 			exit(0);
 		}
 		else if (execve(cmd_path, args, envp) == -1)
@@ -140,18 +142,16 @@ t_data	*process_exec(t_list **command, t_token_type *first, t_data *data)
 {
 	char	**args;
 	int		fd;
-	int		is_pipe;
 	t_list	*current;
 
 	args = ft_combine(command);
 	fd = -1;
-	is_pipe = 0;
 	current = *command;
 	while (current)
 	{
 		if (((t_token *)current->content)->type == TOKEN_PIPE)
 		{
-			is_pipe = 1;
+			data->is_pipe = 1;
 			break ;
 		}
 		current = current->next;
@@ -166,10 +166,10 @@ t_data	*process_exec(t_list **command, t_token_type *first, t_data *data)
 					((t_token *)(*command)->content)->type, 1);
 			*command = (*command)->next->next;
 		}
-		execute_last(data->envp, args, data, is_pipe);
+		execute_last(data->envp, args, data);
 	}
 	else
-		execute(data->envp, args, data, is_pipe);
+		execute(data->envp, args, data);
 	if (fd != -1)
 		close(fd);
 	free_split(args);
