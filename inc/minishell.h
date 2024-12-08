@@ -86,6 +86,7 @@ int								is_env_command(char *cmd);
 
 // get_last_token.c
 t_list							*finish_tokenizing(t_list *first);
+void							free_token(void *lst);
 
 // handle_quotes.c
 char							*handle_quotes(char *line);
