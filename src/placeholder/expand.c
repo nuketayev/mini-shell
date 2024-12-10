@@ -12,6 +12,16 @@
 
 #include "../../inc/minishell.h"
 
+int ft_strlen_until(char *str, char c)
+{
+	int i;
+
+	i = 0;
+	while (str[i] && str[i] != c)
+		i++;
+	return (i);
+}
+
 static char	*get_env_value(char *var_name, char **envp)
 {
 	char	*var_value;
@@ -23,7 +33,7 @@ static char	*get_env_value(char *var_name, char **envp)
 		var_name = remove_quotes(var_name);
 	while (envp[i])
 	{
-		if (ft_strncmp(envp[i], var_name + 1, ft_strlen(var_name + 1)) == 0)
+		if (ft_strncmp(envp[i], var_name + 1, ft_strlen_until(envp[i], '=')) == 0)
 		{
 			var_value = ft_strdup(envp[i] + ft_strlen(var_name));
 			break ;
@@ -96,6 +106,7 @@ char	**expand_args(char **args, char **envp)
 	int		single_quote;
 
 	count = 0;
+	single_quote = 0;
 	while (args[count])
 		count++;
 	expanded_args = malloc((count + 1) * sizeof(char *));
@@ -104,7 +115,7 @@ char	**expand_args(char **args, char **envp)
 	i = 0;
 	while (args[i])
 	{
-		if (args[i] && single_quote % 2 == 0)
+		if (args[i] && single_quote % 2 == 1 && single_quote)
 		{
 			single_quote += count_chars(args[i], '\'');
 			expanded_args[i] = ft_strdup(args[i]);
@@ -119,3 +130,30 @@ char	**expand_args(char **args, char **envp)
 	expanded_args[i] = NULL;
 	return (expanded_args);
 }
+
+// input: $USER
+// output: gharazka
+// input: '$USER'
+// output: $USER
+// input: ' $USER '
+// output: $USER
+// input: ' $USER'
+// output: $USER
+// input: '$USER '
+// output: $USER
+// input "$USER"
+// output: gharazka
+// input "$USER "
+// output: gharazka
+// input " $USER"
+// output: gharazka
+// input " $USER "
+// output: gharazka
+// input $USER '$USER' "$USER"
+// output gharazka $USER gharazka
+// input '$USER' ' $USER' ' $USER ' '$USER '
+// output $USER $USER $USER  $USER
+
+
+// bug fixed:
+// finds value without full path -> if variable = PATH, finds it with $PAT
