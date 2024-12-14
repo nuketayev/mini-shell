@@ -41,49 +41,37 @@ void	process_tokens(t_list *tokens, char *envp[], t_data *data)
 	g_sigint_received = 0;
 }
 
-// void	process_tokens(t_list *tokens, char *envp[], t_data *data)
-// {
-// 	t_list	*to_free;
+int	validate_tokens(t_list *tokens)
+{
+    t_list	*current;
+    t_token	*last_token = NULL;
 
-// 	while (((t_token *)tokens->content)->type != TOKEN_END)
-// 	{
-// 		if (((t_token *)tokens->content)->type == TOKEN_TEXT
-// 			|| ((t_token *)tokens->content)->type == TOKEN_LAST)
-// 		{
-// 			data = process_exec(&tokens, &((t_token *)tokens->content)->type,
-// 					data);
-// 		}
-// 		else if (((t_token *)tokens->content)->type == TOKEN_PIPE)
-// 		{
-// 			tokens = tokens->next;
-// 			data = process_exec(&tokens, &((t_token *)tokens->content)->type,
-// 					data);
-// 		}
-// 		else if (((t_token *)tokens->content)->type == TOKEN_R_INPUT)
-// 		{
-// 			if (redirect_input(((t_token *)tokens->next->content)->value) == -1)
-// 				break ;
-// 			tokens = tokens->next->next;
-// 		}
-// 		else if (((t_token *)tokens->content)->type == TOKEN_HERE_DOC)
-// 		{
-// 			here_doc(((t_token *)tokens->next->content)->value);
-// 			tokens = tokens->next->next;
-// 		}
-// 		else if (((t_token *)tokens->content)->type == TOKEN_R_OUTPUT
-// 			|| (((t_token *)tokens->content)->type == TOKEN_A_OUTPUT))
-// 		{
-// 			redirect_output(((t_token *)tokens->next->content)->value,
-// 				((t_token *)tokens->content)->type, 0);
-// 			tokens = tokens->next->next;
-// 		}
-// 	}
-// 	while (data->ids)
-// 	{
-// 		waitpid((__pid_t)(intptr_t)data->ids->content, NULL, 0);
-// 		to_free = data->ids;
-// 		data->ids = data->ids->next;
-// 		free(to_free);
-// 	}
-// 	g_sigint_received = 0;
-// }
+    if (!tokens)
+        return (0);
+
+    t_token *first_token = (t_token *)tokens->content;
+    if (first_token->type == TOKEN_PIPE || first_token->type == TOKEN_R_OUTPUT || first_token->type == TOKEN_A_OUTPUT || first_token->type == TOKEN_R_INPUT)
+    {
+        ft_errprintf("bash: syntax error near unexpected token `%s`\n", first_token->value);
+        return (0);
+    }
+
+    current = tokens;
+    while (current)
+    {
+        t_token *token = (t_token *)current->content;
+        if (token->type == TOKEN_END)
+        {
+            if (last_token && (last_token->type == TOKEN_PIPE || last_token->type == TOKEN_R_OUTPUT || last_token->type == TOKEN_A_OUTPUT || last_token->type == TOKEN_R_INPUT))
+            {
+                ft_errprintf("bash: syntax error near unexpected token `%s`\n", last_token->value);
+                return (0);
+            }
+            break;
+        }
+        last_token = token;
+        current = current->next;
+    }
+
+    return (1);
+}

@@ -71,6 +71,7 @@ char							*remove_quotes(char *var_name);
 // process_tokens.c
 void							process_tokens(t_list *tokens, char *envp[],
 									t_data *data);
+int								validate_tokens(t_list *tokens);
 void							handle_token_exec(t_list **tokens,
 									t_data **data);
 void							handle_token_pipe(t_list **tokens,
