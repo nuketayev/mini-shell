@@ -49,6 +49,8 @@ static void	process_line(t_list *tokens, char *envp[],
 		{
 			set_handler_three(&sa);
 			process_tokens(tokens, envp, data);
+			ft_lstclear(&tokens, free_token);
+			free_split(data->envp);
 			exit(0);
 		}
 	}
@@ -67,20 +69,14 @@ static void	process_input(char *line, struct sigaction sa, char *envp[],
 
     expanded_args = expand_args(ft_split(line, ' '), envp);
     joined_args = join_args(expanded_args);
+	free_split(expanded_args);
     tokens = tokenize_input(joined_args, 0, NULL, NULL);
-    if (tokens)
-    {
-        if (validate_tokens(tokens))
-        {
-            process_line(tokens, envp, data, sa);
-        }
-        else
-        {
-            ft_lstclear(&tokens, free_token);
-        }
-    }
-    free_split(expanded_args);
-    free(joined_args);
+	data->root_token = tokens;
+	free(joined_args);
+    if (tokens && validate_tokens(tokens))
+    	process_line(tokens, envp, data, sa);
+    else if (tokens)
+    	ft_lstclear(&tokens, free_token);
 }
 
 static char	**copy_envp(char **envp)
