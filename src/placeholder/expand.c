@@ -64,11 +64,6 @@ static int	is_expansion(char *arg, int *single_quote)
 	int	i;
 
 	i = find_dollar(arg);
-	if (ft_strncmp(arg, "\"$\"", 3) == 0 || ft_strncmp(&arg[i], "$?", 3) == 0
-		|| ft_strncmp(&arg[i], "$", 2) == 0)
-	{
-		return (1);
-	}
 	if (arg[0] == '\'' || arg[ft_strlen(arg) - 1] == '\'')
 	{
 		*single_quote += count_chars(arg, '\'');
@@ -76,6 +71,11 @@ static int	is_expansion(char *arg, int *single_quote)
 	}
 	if (i == -1)
 		return (1);
+	if (ft_strncmp(arg, "\"$\"", 3) == 0 || ft_strncmp(&arg[i], "$?", 3) == 0
+	|| ft_strncmp(&arg[i], "$", 2) == 0)
+	{
+		return (1);
+	}
 	return (0);
 }
 
@@ -128,6 +128,7 @@ char	**expand_args(char **args, char **envp)
 		}
 	}
 	expanded_args[i] = NULL;
+	free_split(args);
 	return (expanded_args);
 }
 

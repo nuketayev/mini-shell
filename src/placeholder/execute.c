@@ -55,7 +55,7 @@ static void	execute_last(char **envp, char **args, t_data *data)
 	id = fork();
 	if (id == 0)
 	{
-		if (execve(cmd_path, args, envp) == -1)
+		if (!cmd_path || execve(cmd_path, args, envp) == -1)
 			ft_printf("%s: command not found\n", args[0]);
 	}
 	else
@@ -88,9 +88,14 @@ static t_data	*execute(char **envp, char **args, t_data *data)
 		if (is_command(args[0]))
 		{
 			process_builtins(args, data);
+			free_split(data->envp);
+			ft_lstclear(&data->root_token, free_token);
+			if (cmd_path)
+				free(cmd_path);
+			free_split(args);
 			exit(0);
 		}
-		else if (execve(cmd_path, args, envp) == -1)
+		if (execve(cmd_path, args, envp) == -1)
 			ft_printf("%s: command not found\n", args[0]);
 	}
 	else

@@ -49,6 +49,7 @@ typedef struct s_data
 	t_list						*ids;
 	int							last_exit_status;
 	int							is_pipe;
+	t_list						*root_token;
 }								t_data;
 
 extern volatile sig_atomic_t	g_sigint_received;
