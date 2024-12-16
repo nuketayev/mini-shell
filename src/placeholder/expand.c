@@ -71,8 +71,9 @@ static int	is_expansion(char *arg, int *single_quote)
 	}
 	if (i == -1)
 		return (1);
-	if (ft_strncmp(arg, "\"$\"", 3) == 0 || ft_strncmp(&arg[i], "$?", 3) == 0
-	|| ft_strncmp(&arg[i], "$", 2) == 0)
+	if (ft_strncmp(&arg[i], "$?", 3) == 0)
+		return (2);
+	if (ft_strncmp(arg, "\"$\"", 3) == 0 || ft_strncmp(&arg[i], "$", 2) == 0)
 	{
 		return (1);
 	}
@@ -85,8 +86,11 @@ static char	*expand_env_var(char *arg, char **envp, int *single_quote)
 	char	*var_name;
 	char	*var_value;
 
-	if (is_expansion(arg, single_quote))
+	if (is_expansion(arg, single_quote) == 1)
 		return (ft_strdup(arg));
+	if (is_expansion(arg, single_quote) == 2)
+		return (ft_itoa(g_sigint_received));
+
 	var_name = ft_strdup(arg);
 	var_value = get_env_value(var_name, envp);
 	if (var_value)
