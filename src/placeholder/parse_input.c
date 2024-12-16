@@ -57,12 +57,14 @@ int	skip_word(char *line, int index)
 	{
 		if (line[index] == '\'')
 		{
-			while (line[index + 1] && line[index + 1] != '\'')
+			index++;
+			while (line[index] && line[index] != '\'')
 				index++;
 		}
-		if (line[index] == '\"')
+		else if (line[index] == '\"')
 		{
-			while (line[index + 1] && line[index + 1] != '\"')
+			index++;
+			while (line[index] && line[index] != '\"')
 				index++;
 		}
 		index++;
