@@ -34,6 +34,17 @@ static void	process_builtins(char **args, t_data *data)
 		print_exit_int();
 }
 
+void	execve_fail(char *cmd_path, char **args, t_data *data)
+{
+	ft_printf("%s: command not found\n", args[0]);
+	free_split(data->envp);
+	ft_lstclear(&data->root_token, free_token);
+	if (cmd_path)
+		free(cmd_path);
+	free_split(args);
+	exit(EXIT_FAILURE);
+}
+
 static void	execute_last(char **envp, char **args, t_data *data)
 {
 	int		id;
@@ -56,7 +67,7 @@ static void	execute_last(char **envp, char **args, t_data *data)
 	if (id == 0)
 	{
 		if (!cmd_path || execve(cmd_path, args, envp) == -1)
-			ft_printf("%s: command not found\n", args[0]);
+			execve_fail(cmd_path, args, data);
 	}
 	else
 	{
@@ -96,7 +107,7 @@ static t_data	*execute(char **envp, char **args, t_data *data)
 			exit(0);
 		}
 		if (execve(cmd_path, args, envp) == -1)
-			ft_printf("%s: command not found\n", args[0]);
+			execve_fail(cmd_path, args, data);
 	}
 	else
 	{
