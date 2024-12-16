@@ -6,15 +6,15 @@
 /*   By: anuketay <anuketay@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/07 18:24:55 by anuketay          #+#    #+#             */
-/*   Updated: 2024/12/08 13:24:48 by anuketay         ###   ########.fr       */
+/*   Updated: 2024/12/16 19:38:45 by anuketay         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../inc/minishell.h"
 
-int ft_strlen_until(char *str, char c)
+int	ft_strlen_until(char *str, char c)
 {
-	int i;
+	int	i;
 
 	i = 0;
 	while (str[i] && str[i] != c)
@@ -33,7 +33,8 @@ static char	*get_env_value(char *var_name, char **envp)
 		var_name = remove_quotes(var_name);
 	while (envp[i])
 	{
-		if (ft_strncmp(envp[i], var_name + 1, ft_strlen_until(envp[i], '=')) == 0)
+		if (ft_strncmp(envp[i], var_name + 1, ft_strlen_until(envp[i],
+					'=')) == 0)
 		{
 			var_value = ft_strdup(envp[i] + ft_strlen(var_name));
 			break ;
@@ -90,7 +91,6 @@ static char	*expand_env_var(char *arg, char **envp, int *single_quote)
 		return (ft_strdup(arg));
 	if (is_expansion(arg, single_quote) == 2)
 		return (ft_itoa(g_sigint_received));
-
 	var_name = ft_strdup(arg);
 	var_value = get_env_value(var_name, envp);
 	if (var_value)
@@ -158,7 +158,6 @@ char	**expand_args(char **args, char **envp)
 // output gharazka $USER gharazka
 // input '$USER' ' $USER' ' $USER ' '$USER '
 // output $USER $USER $USER  $USER
-
 
 // bug fixed:
 // finds value without full path -> if variable = PATH, finds it with $PAT

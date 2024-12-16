@@ -6,7 +6,7 @@
 /*   By: anuketay <anuketay@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/16 16:26:00 by anuketay          #+#    #+#             */
-/*   Updated: 2024/12/08 16:37:32 by anuketay         ###   ########.fr       */
+/*   Updated: 2024/12/16 19:39:30 by anuketay         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,8 +31,8 @@ static char	*join_args(char **args)
 	return (joined_args);
 }
 
-static void	process_line(t_list *tokens, char *envp[],
-		t_data *data, struct sigaction sa)
+static void	process_line(t_list *tokens, char *envp[], t_data *data,
+		struct sigaction sa)
 {
 	int	id;
 
@@ -67,16 +67,16 @@ static void	process_input(char *line, struct sigaction sa, char *envp[],
 	char	**expanded_args;
 	char	*joined_args;
 
-    expanded_args = expand_args(ft_split(line, ' '), envp);
-    joined_args = join_args(expanded_args);
+	expanded_args = expand_args(ft_split(line, ' '), envp);
+	joined_args = join_args(expanded_args);
 	free_split(expanded_args);
-    tokens = tokenize_input(joined_args, 0, NULL, NULL);
+	tokens = tokenize_input(joined_args, 0, NULL, NULL);
 	data->root_token = tokens;
 	free(joined_args);
-    if (tokens && validate_tokens(tokens))
-    	process_line(tokens, envp, data, sa);
-    else if (tokens)
-    	ft_lstclear(&tokens, free_token);
+	if (tokens && validate_tokens(tokens))
+		process_line(tokens, envp, data, sa);
+	else if (tokens)
+		ft_lstclear(&tokens, free_token);
 }
 
 static char	**copy_envp(char **envp)

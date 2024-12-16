@@ -41,37 +41,58 @@ void	process_tokens(t_list *tokens, char *envp[], t_data *data)
 	g_sigint_received = 0;
 }
 
+static int	check_first_token(t_token *first_token)
+{
+	if (first_token->type == TOKEN_PIPE || first_token->type == TOKEN_R_OUTPUT
+		|| first_token->type == TOKEN_A_OUTPUT
+		|| first_token->type == TOKEN_R_INPUT)
+	{
+		ft_errprintf("minishell: syntax error near unexpected token `%s`\n",
+			first_token->value);
+		return (0);
+	}
+	return (1);
+}
+
+static int	check_last_token(t_token *last_token)
+{
+	if (last_token && (last_token->type == TOKEN_PIPE
+			|| last_token->type == TOKEN_R_OUTPUT
+			|| last_token->type == TOKEN_A_OUTPUT
+			|| last_token->type == TOKEN_R_INPUT))
+	{
+		ft_errprintf("minishell: syntax error near unexpected token `%s`\n",
+			last_token->value);
+		return (0);
+	}
+	return (1);
+}
+
 int	validate_tokens(t_list *tokens)
 {
-    t_list	*current;
-    t_token	*last_token = NULL;
+	t_list	*current;
+	t_token	*last_token;
+	t_token	*first_token;
+	t_token	*token;
 
-    if (!tokens)
-        return (0);
-
-    t_token *first_token = (t_token *)tokens->content;
-    if (first_token->type == TOKEN_PIPE || first_token->type == TOKEN_R_OUTPUT || first_token->type == TOKEN_A_OUTPUT || first_token->type == TOKEN_R_INPUT)
-    {
-        ft_errprintf("bash: syntax error near unexpected token `%s`\n", first_token->value);
-        return (0);
-    }
-
-    current = tokens;
-    while (current)
-    {
-        t_token *token = (t_token *)current->content;
-        if (token->type == TOKEN_END)
-        {
-            if (last_token && (last_token->type == TOKEN_PIPE || last_token->type == TOKEN_R_OUTPUT || last_token->type == TOKEN_A_OUTPUT || last_token->type == TOKEN_R_INPUT))
-            {
-                ft_errprintf("bash: syntax error near unexpected token `%s`\n", last_token->value);
-                return (0);
-            }
-            break;
-        }
-        last_token = token;
-        current = current->next;
-    }
-
-    return (1);
+	last_token = NULL;
+	if (!tokens)
+		return (0);
+	first_token = (t_token *)tokens->content;
+	if (!check_first_token(first_token))
+		return (0);
+	current = tokens;
+	while (current)
+	{
+		token = (t_token *)current->content;
+		if (token->type == TOKEN_END)
+		{
+			if (!check_last_token(last_token))
+				return (0);
+			break ;
+		}
+		last_token = token;
+		current = current->next;
+	}
+	return (1);
 }
