@@ -34,7 +34,7 @@ static void	process_builtins(char **args, t_data *data)
 		print_exit_int();
 }
 
-static void	execute_last(char **envp, char **args, t_data *data)
+void	execute_last(char **envp, char **args, t_data *data)
 {
 	int		id;
 	char	*cmd_path;
@@ -45,18 +45,14 @@ static void	execute_last(char **envp, char **args, t_data *data)
 		return ;
 	}
 	if (args[0][0] == '/')
-	{
 		cmd_path = ft_strdup(args[0]);
-	}
 	else
-	{
 		cmd_path = get_command_path(envp, args[0]);
-	}
 	id = fork();
 	if (id == 0)
 	{
 		if (!cmd_path || execve(cmd_path, args, envp) == -1)
-			ft_printf("%s: command not found\n", args[0]);
+			execve_fail(cmd_path, args, data);
 	}
 	else
 	{
@@ -86,61 +82,13 @@ static t_data	*execute(char **envp, char **args, t_data *data)
 		dup2(fd[1], STDOUT_FILENO);
 		close(fd[1]);
 		if (is_command(args[0]))
-		{
 			process_builtins(args, data);
-			free_split(data->envp);
-			ft_lstclear(&data->root_token, free_token);
-			if (cmd_path)
-				free(cmd_path);
-			free_split(args);
-			exit(0);
-		}
 		if (execve(cmd_path, args, envp) == -1)
-			ft_printf("%s: command not found\n", args[0]);
+			execve_fail(cmd_path, args, data);
 	}
 	else
-	{
-		if (data->ids == NULL)
-			data->ids = ft_lstnew((void *)(intptr_t)id);
-		else
-			ft_lstadd_back(&data->ids, ft_lstnew((void *)(intptr_t)id));
-		dup2(fd[0], STDIN_FILENO);
-		close(fd[0]);
-		close(fd[1]);
-		free(cmd_path);
-	}
+		data = save_id(data, id, fd, cmd_path);
 	return (data);
-}
-
-static char	**ft_combine(t_list **command)
-{
-	char	**args;
-	int		i;
-
-	args = (char **)malloc(80);
-	i = 0;
-	while (((t_token *)(*command)->content)->type == TOKEN_TEXT
-		|| ((t_token *)(*command)->content)->type == TOKEN_LAST)
-	{
-		args[i] = ft_strdup(((t_token *)(*command)->content)->value);
-		i++;
-		*command = (*command)->next;
-	}
-	args[i] = NULL;
-	return (args);
-}
-
-static void	find_last_redirection(t_list **command)
-{
-	while ((((t_token *)(*command)->content)->type == TOKEN_R_OUTPUT
-			|| ((t_token *)(*command)->content)->type == TOKEN_A_OUTPUT)
-		&& (((t_token *)(*command)->next->next->content)->type == TOKEN_R_OUTPUT
-			|| ((t_token *)(*command)->next->next->content)->type == TOKEN_A_OUTPUT))
-	{
-		redirect_output(((t_token *)(*command)->next->content)->value,
-			((t_token *)(*command)->content)->type, 0);
-		*command = (*command)->next->next;
-	}
 }
 
 t_data	*process_exec(t_list **command, t_token_type *first, t_data *data)
@@ -150,7 +98,6 @@ t_data	*process_exec(t_list **command, t_token_type *first, t_data *data)
 	t_list	*current;
 
 	args = ft_combine(command);
-	fd = -1;
 	current = *command;
 	while (current)
 	{
@@ -162,21 +109,9 @@ t_data	*process_exec(t_list **command, t_token_type *first, t_data *data)
 		current = current->next;
 	}
 	if (*first == TOKEN_LAST)
-	{
-		find_last_redirection(command);
-		if (((t_token *)(*command)->content)->type == TOKEN_R_OUTPUT
-			|| ((t_token *)(*command)->content)->type == TOKEN_A_OUTPUT)
-		{
-			fd = redirect_output(((t_token *)(*command)->next->content)->value,
-					((t_token *)(*command)->content)->type, 1);
-			*command = (*command)->next->next;
-		}
-		execute_last(data->envp, args, data);
-	}
+		prepare_exec_last(command, data, args);
 	else
 		execute(data->envp, args, data);
-	if (fd != -1)
-		close(fd);
 	free_split(args);
 	return (data);
 }

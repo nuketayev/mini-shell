@@ -114,6 +114,14 @@ void							ft_exit(void);
 void							env(char *envp[]);
 void							echo(char **args, char *envp[]);
 void							print_exit_int(void);
+int								ft_strlen_until(char *str, char c);
+int								count_chars(char *arg, char c);
+void							find_last_redirection(t_list **command);
+char							**ft_combine(t_list **command);
+void							execve_fail(char *cmd_path, char **args, t_data *data);
+void							execute_last(char **envp, char **args, t_data *data);
+void							prepare_exec_last(t_list **command, t_data *data, char **args);
+t_data							*save_id(t_data *data, int id, int *fd, char *cmd_path);
 
 void							print_lst(t_list *lst);
 void							print_array(char **arr);

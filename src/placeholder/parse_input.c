@@ -53,7 +53,7 @@ int	check_token_symbols(char *line, t_list **new, int index)
 int	skip_word(char *line, int index)
 {
 	while (line[index] && !isspace(line[index]) && line[index] != '<'
-		&& line[index] != '>')
+		&& line[index] != '>' && line[index] != '|')
 	{
 		if (line[index] == '\'')
 		{
