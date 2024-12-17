@@ -12,16 +12,6 @@
 
 #include "../../inc/minishell.h"
 
-int	ft_strlen_until(char *str, char c)
-{
-	int	i;
-
-	i = 0;
-	while (str[i] && str[i] != c)
-		i++;
-	return (i);
-}
-
 static char	*get_env_value(char *var_name, char **envp)
 {
 	char	*var_value;
@@ -42,22 +32,6 @@ static char	*get_env_value(char *var_name, char **envp)
 		i++;
 	}
 	return (var_value);
-}
-
-int	count_chars(char *arg, char c)
-{
-	int	i;
-	int	count;
-
-	i = 0;
-	count = 0;
-	while (arg[i])
-	{
-		if (arg[i] == c)
-			count++;
-		i++;
-	}
-	return (count);
 }
 
 static int	is_expansion(char *arg, int *single_quote)
@@ -102,20 +76,11 @@ static char	*expand_env_var(char *arg, char **envp, int *single_quote)
 	return (expanded_arg);
 }
 
-char	**expand_args(char **args, char **envp)
+char	**check_for_quotes(char **args, char **expanded_args,
+		int single_quote, char **envp)
 {
-	char	**expanded_args;
 	int		i;
-	int		count;
-	int		single_quote;
 
-	count = 0;
-	single_quote = 0;
-	while (args[count])
-		count++;
-	expanded_args = malloc((count + 1) * sizeof(char *));
-	if (!expanded_args)
-		return (NULL);
 	i = 0;
 	while (args[i])
 	{
@@ -132,6 +97,23 @@ char	**expand_args(char **args, char **envp)
 		}
 	}
 	expanded_args[i] = NULL;
+	return (expanded_args);
+}
+
+char	**expand_args(char **args, char **envp)
+{
+	char	**expanded_args;
+	int		count;
+	int		single_quote;
+
+	count = 0;
+	single_quote = 0;
+	while (args[count])
+		count++;
+	expanded_args = malloc((count + 1) * sizeof(char *));
+	if (!expanded_args)
+		return (NULL);
+	check_for_quotes(args, expanded_args, single_quote, envp);
 	free_split(args);
 	return (expanded_args);
 }

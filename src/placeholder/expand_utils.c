@@ -48,3 +48,29 @@ char	*remove_quotes(char *var_name)
 	new_str[i - offset] = '\0';
 	return (new_str);
 }
+
+int	ft_strlen_until(char *str, char c)
+{
+	int	i;
+
+	i = 0;
+	while (str[i] && str[i] != c)
+		i++;
+	return (i);
+}
+
+int	count_chars(char *arg, char c)
+{
+	int	i;
+	int	count;
+
+	i = 0;
+	count = 0;
+	while (arg[i])
+	{
+		if (arg[i] == c)
+			count++;
+		i++;
+	}
+	return (count);
+}
