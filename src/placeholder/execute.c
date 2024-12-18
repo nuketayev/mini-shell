@@ -27,9 +27,7 @@ static void	process_builtins(char **args, t_data *data)
 	else if (ft_strncmp(args[0], "env", 4) == 0)
 		env(data->envp);
 	else if (ft_strncmp(args[0], "cd", 3) == 0 && !data->is_pipe)
-	{
 		cd(args, data);
-	}
 	else if (ft_strncmp(args[0], "$?", 3) == 0)
 		print_exit_int();
 }
@@ -44,7 +42,7 @@ void	execute_last(char **envp, char **args, t_data *data)
 		process_builtins(args, data);
 		return ;
 	}
-	if (args[0][0] == '/')
+	if (args[0][0] == '/' || ft_strncmp(args[0], "./", 2) == 0)
 		cmd_path = ft_strdup(args[0]);
 	else
 		cmd_path = get_command_path(envp, args[0]);
