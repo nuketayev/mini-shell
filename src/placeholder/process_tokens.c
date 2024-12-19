@@ -43,9 +43,7 @@ void	process_tokens(t_list *tokens, char *envp[], t_data *data)
 
 static int	check_first_token(t_token *first_token)
 {
-	if (first_token->type == TOKEN_PIPE || first_token->type == TOKEN_R_OUTPUT
-		|| first_token->type == TOKEN_A_OUTPUT
-		|| first_token->type == TOKEN_R_INPUT)
+	if (first_token->type == TOKEN_PIPE)
 	{
 		ft_errprintf("minishell: syntax error near unexpected token `%s`\n",
 			first_token->value);
