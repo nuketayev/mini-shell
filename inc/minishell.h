@@ -25,14 +25,14 @@
 
 typedef enum e_token_type
 {
-	TOKEN_END,
-	TOKEN_R_INPUT,
-	TOKEN_HERE_DOC,
-	TOKEN_R_OUTPUT,
-	TOKEN_A_OUTPUT,
-	TOKEN_TEXT,
-	TOKEN_LAST,
-	TOKEN_PIPE
+	TOKEN_END, // 0
+	TOKEN_R_INPUT, // 1
+	TOKEN_HERE_DOC, // 2
+	TOKEN_R_OUTPUT, // 3
+	TOKEN_A_OUTPUT, // 4
+	TOKEN_TEXT, // 5
+	TOKEN_LAST, // 6
+	TOKEN_PIPE 	// 7
 }								t_token_type;
 
 typedef struct s_token
