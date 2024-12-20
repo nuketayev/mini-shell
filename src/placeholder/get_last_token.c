@@ -6,13 +6,13 @@
 /*   By: anuketay <anuketay@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/07 13:23:58 by anuketay          #+#    #+#             */
-/*   Updated: 2024/12/07 13:23:59 by anuketay         ###   ########.fr       */
+/*   Updated: 2024/12/20 18:54:35 by anuketay         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../inc/minishell.h"
 
-static int is_delimiter(int type)
+static int	is_delimiter(int type)
 {
 	if (type == TOKEN_END || type == TOKEN_R_OUTPUT || type == TOKEN_A_OUTPUT
 		|| type == TOKEN_HERE_DOC || type == TOKEN_R_INPUT)
@@ -46,9 +46,8 @@ t_list	*finish_tokenizing(t_list *first)
 	t_list	*current;
 
 	current = first;
-	while (current
-		&& (((t_token *)current->content)->type == TOKEN_R_INPUT
-		|| ((t_token *)current->content)->type == TOKEN_HERE_DOC))
+	while (current && (((t_token *)current->content)->type == TOKEN_R_INPUT
+			|| ((t_token *)current->content)->type == TOKEN_HERE_DOC))
 	{
 		current = current->next;
 		if (current)

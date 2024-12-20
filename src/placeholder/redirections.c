@@ -6,7 +6,7 @@
 /*   By: anuketay <anuketay@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/07 13:24:17 by anuketay          #+#    #+#             */
-/*   Updated: 2024/12/08 13:45:53 by anuketay         ###   ########.fr       */
+/*   Updated: 2024/12/20 19:14:29 by anuketay         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,8 +58,11 @@ static int	get_another_line(char **line)
 	if (!buffer)
 		return (-1);
 	write(STDOUT_FILENO, "> ", 2);
-	while ((result = read(STDIN_FILENO, &c, 1)) > 0 && c != '\n' && c != '\0')
+	while (1)
 	{
+		result = read(STDIN_FILENO, &c, 1);
+		if (result <= 0 || c == '\n' || c == '\0')
+			break ;
 		if (i >= 1023)
 		{
 			free(buffer);

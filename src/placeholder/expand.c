@@ -6,7 +6,7 @@
 /*   By: anuketay <anuketay@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/07 18:24:55 by anuketay          #+#    #+#             */
-/*   Updated: 2024/12/16 19:38:45 by anuketay         ###   ########.fr       */
+/*   Updated: 2024/12/20 18:44:32 by anuketay         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,7 +26,9 @@ static char	*get_env_value(char *var_name, char **envp)
 		if (ft_strncmp(envp[i], var_name + 1, ft_strlen_until(envp[i],
 					'=')) == 0)
 		{
-			var_value = ft_strjoin(ft_strdup(envp[i] + ft_strlen_until(envp[i], '=') + 1), var_name + ft_strlen_until(envp[i], '=') + 1, 1);
+			var_value = ft_strjoin(ft_strdup(envp[i] + ft_strlen_until(envp[i],
+							'=') + 1), var_name + ft_strlen_until(envp[i], '=')
+					+ 1, 1);
 			break ;
 		}
 		i++;
@@ -46,7 +48,8 @@ static int	is_expansion(char *arg, int *single_quote)
 	}
 	if (i == -1)
 		return (1);
-	if (ft_strncmp(arg, "\"$\"", 3) == 0 || ft_strncmp(&arg[i], "$", 2) == 0 || ft_strncmp(&arg[i], "$?", 3) == 0)
+	if (ft_strncmp(arg, "\"$\"", 3) == 0 || ft_strncmp(&arg[i], "$", 2) == 0
+		|| ft_strncmp(&arg[i], "$?", 3) == 0)
 		return (1);
 	return (0);
 }
@@ -70,10 +73,10 @@ static char	*expand_env_var(char *arg, char **envp, int *single_quote)
 	return (expanded_arg);
 }
 
-char	**check_for_quotes(char **args, char **expanded_args,
-		int single_quote, char **envp)
+char	**check_for_quotes(char **args, char **expanded_args, int single_quote,
+		char **envp)
 {
-	int		i;
+	int	i;
 
 	i = 0;
 	while (args[i])

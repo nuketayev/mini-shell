@@ -6,7 +6,7 @@
 /*   By: anuketay <anuketay@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/08 13:21:33 by anuketay          #+#    #+#             */
-/*   Updated: 2024/12/08 13:22:30 by anuketay         ###   ########.fr       */
+/*   Updated: 2024/12/20 18:49:18 by anuketay         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,10 +29,11 @@ int	find_dollar(char *arg)
 char	*remove_quotes(char *var_name)
 {
 	char	*new_str;
-	size_t		i;
+	size_t	i;
 	size_t	offset;
 
-	new_str = malloc(ft_strlen(var_name) - count_chars(var_name, '\"') + 2 * sizeof(char));
+	new_str = malloc(ft_strlen(var_name) - count_chars(var_name, '\"') + 2
+			* sizeof(char));
 	if (!new_str)
 		return (NULL);
 	i = 0;
