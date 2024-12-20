@@ -105,6 +105,16 @@ t_data	*process_exec(t_list **command, t_token_type *first, t_data *data)
 		}
 		current = current->next;
 	}
+	if (((t_token *)(*command)->content)->type == TOKEN_R_INPUT)
+	{
+		redirect_input(((t_token *)(*command)->next->content)->value);
+		*command = (*command)->next->next;
+	}
+	else if (((t_token *)(*command)->content)->type == TOKEN_HERE_DOC)
+	{
+		here_doc(((t_token *)(*command)->next->content)->value);
+		*command = (*command)->next->next;
+	}
 	if (*first == TOKEN_LAST)
 		prepare_exec_last(command, data, args);
 	else

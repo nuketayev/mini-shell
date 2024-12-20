@@ -42,6 +42,7 @@ void	find_last_redirection(t_list **command)
             ((t_token *)(*command)->content)->type, 0);
         *command = (*command)->next->next;
     }
+
 }
 
 void    free_all(char *cmd_path, t_data *data, char **args)
