@@ -23,11 +23,12 @@ void	handle_token_pipe(t_list **tokens, t_data **data)
 	*data = process_exec(tokens, &((t_token *)(*tokens)->content)->type, *data);
 }
 
-void	handle_token_input(t_list **tokens)
+int	handle_token_input(t_list **tokens)
 {
 	if (redirect_input(((t_token *)(*tokens)->next->content)->value) == -1)
-		return ;
+		return (-1);
 	*tokens = (*tokens)->next->next;
+	return (0);
 }
 
 void	handle_token_here_doc(t_list **tokens)

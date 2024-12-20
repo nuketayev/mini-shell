@@ -76,7 +76,7 @@ void							handle_token_exec(t_list **tokens,
 									t_data **data);
 void							handle_token_pipe(t_list **tokens,
 									t_data **data);
-void							handle_token_input(t_list **tokens);
+int								handle_token_input(t_list **tokens);
 void							handle_token_here_doc(t_list **tokens);
 void							handle_token_output(t_list **tokens);
 

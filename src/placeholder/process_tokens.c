@@ -24,7 +24,10 @@ void	process_tokens(t_list *tokens, t_data *data)
 		else if (((t_token *)tokens->content)->type == TOKEN_PIPE)
 			handle_token_pipe(&tokens, &data);
 		else if (((t_token *)tokens->content)->type == TOKEN_R_INPUT)
-			handle_token_input(&tokens);
+		{
+			if (handle_token_input(&tokens) == -1)
+				return ;
+		}
 		else if (((t_token *)tokens->content)->type == TOKEN_HERE_DOC)
 			handle_token_here_doc(&tokens);
 		else if (((t_token *)tokens->content)->type == TOKEN_R_OUTPUT
