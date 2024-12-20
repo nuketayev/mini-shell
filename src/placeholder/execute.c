@@ -15,15 +15,15 @@
 static void	process_builtins(char **args, t_data *data)
 {
 	if (ft_strncmp(args[0], "pwd", 4) == 0)
-		pwd(args, data->envp);
+		pwd();
 	else if (ft_strncmp(args[0], "echo", 5) == 0)
-		echo(args, data->envp);
+		echo(args);
 	else if (ft_strncmp(args[0], "export", 7) == 0)
 		export(args, &(data->envp));
 	else if (ft_strncmp(args[0], "unset", 6) == 0)
 		unset(args, data->envp);
 	else if (ft_strncmp(args[0], "exit", 5) == 0)
-		ft_exit();
+		ft_exit(args);
 	else if (ft_strncmp(args[0], "env", 4) == 0)
 		env(data->envp);
 	else if (ft_strncmp(args[0], "cd", 3) == 0 && !data->is_pipe)
@@ -92,7 +92,6 @@ static t_data	*execute(char **envp, char **args, t_data *data)
 t_data	*process_exec(t_list **command, t_token_type *first, t_data *data)
 {
 	char	**args;
-	int		fd;
 	t_list	*current;
 
 	args = ft_combine(command);

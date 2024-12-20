@@ -12,7 +12,7 @@
 
 #include "../../inc/minishell.h"
 
-void	echo(char **args, char *envp[])
+void	echo(char **args)
 {
 	int	index;
 	int	newline;

@@ -70,8 +70,7 @@ int								find_dollar(char *arg);
 char							*remove_quotes(char *var_name);
 
 // process_tokens.c
-void							process_tokens(t_list *tokens, char *envp[],
-									t_data *data);
+void							process_tokens(t_list *tokens, t_data *data);
 int								validate_tokens(t_list *tokens);
 void							handle_token_exec(t_list **tokens,
 									t_data **data);
@@ -105,14 +104,14 @@ int								redirect_output(char *filename,
 void							here_doc(char *limiter);
 
 void							unset(char **args, char *envp[]);
-void							pwd(char **args, char *envp[]);
+void							pwd(void);
 void							cd(char **args, t_data *data);
 void							export(char **args, char ***envp);
 void							sort_envp(char ***envp);
 void							print_sorted_envp(char ***envp);
-void							ft_exit(void);
+void							ft_exit(char **args);
 void							env(char *envp[]);
-void							echo(char **args, char *envp[]);
+void							echo(char **args);
 void							print_exit_int(void);
 int								ft_strlen_until(char *str, char c);
 int								count_chars(char *arg, char c);

@@ -1,5 +1,5 @@
 NAME = minishell
-CFLAGS = -c
+CFLAGS = -c -Wall -Wextra -Werror
 LDFLAGS = -lreadline
 
 LIBFT = lib/libft

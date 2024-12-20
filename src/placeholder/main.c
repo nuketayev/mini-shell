@@ -31,7 +31,7 @@ static char	*join_args(char **args)
 	return (joined_args);
 }
 
-static void	process_line(t_list *tokens, char *envp[], t_data *data,
+static void	process_line(t_list *tokens, t_data *data,
 		struct sigaction sa)
 {
 	int	id;
@@ -40,7 +40,7 @@ static void	process_line(t_list *tokens, char *envp[], t_data *data,
 	if (is_env_command(((t_token *)tokens->content)->value))
 	{
 		signal(SIGINT, SIG_DFL);
-		process_tokens(tokens, envp, data);
+		process_tokens(tokens, data);
 	}
 	else
 	{
@@ -48,7 +48,7 @@ static void	process_line(t_list *tokens, char *envp[], t_data *data,
 		if (id == 0)
 		{
 			set_handler_three(&sa);
-			process_tokens(tokens, envp, data);
+			process_tokens(tokens, data);
 			ft_lstclear(&tokens, free_token);
 			free_split(data->envp);
 			exit(0);
@@ -74,7 +74,7 @@ static void	process_input(char *line, struct sigaction sa, char *envp[],
 	data->root_token = tokens;
 	free(joined_args);
 	if (tokens && validate_tokens(tokens))
-		process_line(tokens, envp, data, sa);
+		process_line(tokens, data, sa);
 	else if (tokens)
 		ft_lstclear(&tokens, free_token);
 }
@@ -100,12 +100,14 @@ static char	**copy_envp(char **envp)
 	return (new_envp);
 }
 
-int	main(int _argc, char *_argv[], char *envp[])
+int	main(int argc, char *argv[], char *envp[])
 {
 	struct sigaction	sa;
 	t_data				data;
 	char				*line;
 
+	(void)argc;
+	(void)argv;
 	data.envp = copy_envp(envp);
 	data.exit_flag = 0;
 	data.fd = -1;

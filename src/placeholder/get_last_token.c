@@ -40,8 +40,9 @@ t_list	*finish_tokenizing(t_list *first)
 	t_list	*current;
 
 	current = first;
-	while (((t_token *)current->content)->type == TOKEN_R_INPUT
-		|| ((t_token *)current->content)->type == TOKEN_HERE_DOC)
+	while (current
+		&& (((t_token *)current->content)->type == TOKEN_R_INPUT
+		|| ((t_token *)current->content)->type == TOKEN_HERE_DOC))
 	{
 		current = current->next;
 		if (current)
