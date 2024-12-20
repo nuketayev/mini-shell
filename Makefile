@@ -1,5 +1,5 @@
 NAME = minishell
-CFLAGS = -c
+CFLAGS = -c -Wall -Wextra -Werror
 LDFLAGS = -lreadline
 
 LIBFT = lib/libft
@@ -9,7 +9,7 @@ src/placeholder/signal_handler.c src/placeholder/signal_handler_utils.c src/plac
 src/placeholder/redirections.c src/placeholder/execute.c \
 src/builtins/cd.c src/builtins/echo.c src/builtins/env.c src/builtins/exit.c src/builtins/export.c src/builtins/export_utils.c src/builtins/pwd.c \
 src/builtins/unset.c src/placeholder/test_utils.c src/placeholder/expand.c src/placeholder/expand_utils.c src/builtins/print_exit_int.c \
-src/placeholder/execute_utils.c
+src/placeholder/execute_utils.c src/placeholder/get_last_exit.c
 
 OBJECTS = ${SOURCES:.c=.o}
 HEADERS = -I inc -I /usr/include/readline

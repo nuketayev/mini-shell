@@ -12,8 +12,10 @@
 
 #include "../../inc/minishell.h"
 
-void	ft_exit(void)
+void	ft_exit(char **args)
 {
 	ft_printf("exit\n");
+	if (args && args[1])
+		exit(ft_atoi(args[1]));
 	exit(0);
 }

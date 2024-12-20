@@ -26,7 +26,7 @@ static char	*get_env_value(char *var_name, char **envp)
 		if (ft_strncmp(envp[i], var_name + 1, ft_strlen_until(envp[i],
 					'=')) == 0)
 		{
-			var_value = ft_strdup(envp[i] + ft_strlen(var_name));
+			var_value = ft_strjoin(ft_strdup(envp[i] + ft_strlen_until(envp[i], '=') + 1), var_name + ft_strlen_until(envp[i], '=') + 1, 1);
 			break ;
 		}
 		i++;
@@ -46,12 +46,8 @@ static int	is_expansion(char *arg, int *single_quote)
 	}
 	if (i == -1)
 		return (1);
-	if (ft_strncmp(&arg[i], "$?", 3) == 0)
-		return (2);
-	if (ft_strncmp(arg, "\"$\"", 3) == 0 || ft_strncmp(&arg[i], "$", 2) == 0)
-	{
+	if (ft_strncmp(arg, "\"$\"", 3) == 0 || ft_strncmp(&arg[i], "$", 2) == 0 || ft_strncmp(&arg[i], "$?", 3) == 0)
 		return (1);
-	}
 	return (0);
 }
 
@@ -63,8 +59,6 @@ static char	*expand_env_var(char *arg, char **envp, int *single_quote)
 
 	if (is_expansion(arg, single_quote) == 1)
 		return (ft_strdup(arg));
-	if (is_expansion(arg, single_quote) == 2)
-		return (ft_itoa(g_sigint_received));
 	var_name = ft_strdup(arg);
 	var_value = get_env_value(var_name, envp);
 	if (var_value)

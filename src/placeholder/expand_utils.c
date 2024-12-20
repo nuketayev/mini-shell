@@ -29,21 +29,26 @@ int	find_dollar(char *arg)
 char	*remove_quotes(char *var_name)
 {
 	char	*new_str;
-	int		i;
-	int		offset;
+	size_t		i;
+	size_t	offset;
 
-	new_str = malloc(ft_strlen(var_name) * sizeof(char));
+	new_str = malloc(ft_strlen(var_name) - count_chars(var_name, '\"') + 2 * sizeof(char));
 	if (!new_str)
 		return (NULL);
-	if (var_name[0] == '\"')
-		i = 1;
-	else
-		i = 0;
+	i = 0;
 	offset = i;
-	while (var_name[i] && var_name[i] != '\"')
+	while (var_name[i])
 	{
-		new_str[i - offset] = var_name[i];
-		i++;
+		if (var_name[i] != '\"')
+		{
+			new_str[i - offset] = var_name[i];
+			i++;
+		}
+		else
+		{
+			offset++;
+			i++;
+		}
 	}
 	new_str[i - offset] = '\0';
 	return (new_str);

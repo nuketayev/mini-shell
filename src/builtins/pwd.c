@@ -12,7 +12,7 @@
 
 #include "../../inc/minishell.h"
 
-void	pwd(char **args, char *envp[])
+void	pwd(void)
 {
 	char	cwd[PATH_MAX];
 

@@ -70,14 +70,13 @@ int								find_dollar(char *arg);
 char							*remove_quotes(char *var_name);
 
 // process_tokens.c
-void							process_tokens(t_list *tokens, char *envp[],
-									t_data *data);
+t_data							*process_tokens(t_list *tokens, t_data *data);
 int								validate_tokens(t_list *tokens);
 void							handle_token_exec(t_list **tokens,
 									t_data **data);
 void							handle_token_pipe(t_list **tokens,
 									t_data **data);
-void							handle_token_input(t_list **tokens);
+int								handle_token_input(t_list **tokens);
 void							handle_token_here_doc(t_list **tokens);
 void							handle_token_output(t_list **tokens);
 
@@ -105,23 +104,24 @@ int								redirect_output(char *filename,
 void							here_doc(char *limiter);
 
 void							unset(char **args, char *envp[]);
-void							pwd(char **args, char *envp[]);
+void							pwd(void);
 void							cd(char **args, t_data *data);
 void							export(char **args, char ***envp);
 void							sort_envp(char ***envp);
 void							print_sorted_envp(char ***envp);
-void							ft_exit(void);
+void							ft_exit(char **args);
 void							env(char *envp[]);
-void							echo(char **args, char *envp[]);
+void							echo(char **args);
 void							print_exit_int(void);
 int								ft_strlen_until(char *str, char c);
 int								count_chars(char *arg, char c);
 void							find_last_redirection(t_list **command);
 char							**ft_combine(t_list **command);
 void							execve_fail(char *cmd_path, char **args, t_data *data);
-void							execute_last(char **envp, char **args, t_data *data);
-void							prepare_exec_last(t_list **command, t_data *data, char **args);
+t_data							*execute_last(char **envp, char **args, t_data *data);
+t_data							*prepare_exec_last(t_list **command, t_data *data, char **args);
 t_data							*save_id(t_data *data, int id, int *fd, char *cmd_path);
+t_list							*get_last_exit(t_list *tokens, t_list *first, t_data *data);
 
 void							print_lst(t_list *lst);
 void							print_array(char **arr);
