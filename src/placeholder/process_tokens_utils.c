@@ -23,10 +23,13 @@ void	handle_token_pipe(t_list **tokens, t_data **data)
 	*data = process_exec(tokens, &((t_token *)(*tokens)->content)->type, *data);
 }
 
-int	handle_token_input(t_list **tokens)
+int	handle_token_input(t_list **tokens, t_data **data)
 {
 	if (redirect_input(((t_token *)(*tokens)->next->content)->value) == -1)
+	{
+		(*data)->exit_flag = 512;
 		return (-1);
+	}
 	*tokens = (*tokens)->next->next;
 	return (0);
 }
