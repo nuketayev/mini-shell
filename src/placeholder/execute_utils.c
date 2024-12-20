@@ -55,16 +55,6 @@ void	find_last_redirection(t_list **command)
 	}
 }
 
-void	free_all(char *cmd_path, t_data *data, char **args)
-{
-	free_split(data->envp);
-	ft_lstclear(&data->root_token, free_token);
-	if (cmd_path)
-		free(cmd_path);
-	free_split(args);
-	exit(0);
-}
-
 t_data	*prepare_exec_last(t_list **command, t_data *data, char **args)
 {
 	int	fd;

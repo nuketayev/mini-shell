@@ -120,4 +120,6 @@ t_data		*execute_last(char **envp, char **args, t_data *data);
 t_data		*prepare_exec_last(t_list **command, t_data *data, char **args);
 t_data		*save_id(t_data *data, int id, int *fd, char *cmd_path);
 t_list		*get_last_exit(t_list *tokens, t_list *first, t_data *data);
+void	free_all(char *cmd_path, t_data *data, char **args);
+int	check_last(t_list *current, t_token *last_token);
 #endif
