@@ -9,7 +9,7 @@ void	execve_fail(char *cmd_path, char **args, t_data *data)
     if (cmd_path)
         free(cmd_path);
     free_split(args);
-    exit(EXIT_FAILURE);
+    exit(127);
 }
 
 char	**ft_combine(t_list **command)
@@ -55,7 +55,7 @@ void    free_all(char *cmd_path, t_data *data, char **args)
     exit(0);
 }
 
-void    prepare_exec_last(t_list **command, t_data *data, char **args)
+t_data    *prepare_exec_last(t_list **command, t_data *data, char **args)
 {
     int fd;
 
@@ -70,7 +70,8 @@ void    prepare_exec_last(t_list **command, t_data *data, char **args)
     }
     if (fd != -1)
         close(fd);
-    execute_last(data->envp, args, data);
+    data = execute_last(data->envp, args, data);
+    return (data);
 }
 
 t_data    *save_id(t_data *data, int id, int *fd, char *cmd_path)

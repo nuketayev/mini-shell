@@ -12,7 +12,7 @@
 
 #include "../../inc/minishell.h"
 
-void	process_tokens(t_list *tokens, t_data *data)
+t_data	*process_tokens(t_list *tokens, t_data *data)
 {
 	t_list	*to_free;
 
@@ -23,10 +23,10 @@ void	process_tokens(t_list *tokens, t_data *data)
 			handle_token_exec(&tokens, &data);
 		else if (((t_token *)tokens->content)->type == TOKEN_PIPE)
 			handle_token_pipe(&tokens, &data);
-		else if (((t_token *)tokens->content)->type == TOKEN_R_INPUT)
+		else if (((t_token *)tokens->content)->type == TOKEN_R_INPUT && handle_token_input(&tokens) == -1)
 		{
-			if (handle_token_input(&tokens) == -1)
-				return ;
+			data->exit_flag = 512;
+			return (data);
 		}
 		else if (((t_token *)tokens->content)->type == TOKEN_HERE_DOC)
 			handle_token_here_doc(&tokens);
@@ -36,12 +36,12 @@ void	process_tokens(t_list *tokens, t_data *data)
 	}
 	while (data->ids)
 	{
-		waitpid((__pid_t)(intptr_t)data->ids->content, NULL, 0);
+		waitpid((__pid_t)(intptr_t)data->ids->content, &data->exit_flag, 0);
 		to_free = data->ids;
 		data->ids = data->ids->next;
 		free(to_free);
 	}
-	g_sigint_received = 0;
+	return (data);
 }
 
 static int	check_first_token(t_token *first_token, t_token *second_token)
@@ -88,7 +88,10 @@ int	validate_tokens(t_list *tokens)
 		return (0);
 	last_token = NULL;
 	first_token = (t_token *)tokens->content;
-	second_token = (t_token *)tokens->next->content;
+	if ((t_token *)tokens->next)
+		second_token = (t_token *)tokens->next->content;
+	else
+		second_token = NULL;
 	if (!check_first_token(first_token, second_token))
 		return (0);
 	current = tokens;

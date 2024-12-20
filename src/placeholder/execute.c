@@ -32,7 +32,7 @@ static void	process_builtins(char **args, t_data *data)
 		print_exit_int();
 }
 
-void	execute_last(char **envp, char **args, t_data *data)
+t_data	*execute_last(char **envp, char **args, t_data *data)
 {
 	int		id;
 	char	*cmd_path;
@@ -40,7 +40,7 @@ void	execute_last(char **envp, char **args, t_data *data)
 	if (is_command(args[0]))
 	{
 		process_builtins(args, data);
-		return ;
+		return (data);
 	}
 	if (args[0][0] == '/' || ft_strncmp(args[0], "./", 2) == 0)
 		cmd_path = ft_strdup(args[0]);
@@ -54,10 +54,11 @@ void	execute_last(char **envp, char **args, t_data *data)
 	}
 	else
 	{
-		waitpid(id, NULL, 0);
+		waitpid(id, &data->exit_flag, 0);
 		close(STDIN_FILENO);
 		free(cmd_path);
 	}
+	return (data);
 }
 
 static t_data	*execute(char **envp, char **args, t_data *data)
@@ -116,7 +117,7 @@ t_data	*process_exec(t_list **command, t_token_type *first, t_data *data)
 		*command = (*command)->next->next;
 	}
 	if (*first == TOKEN_LAST)
-		prepare_exec_last(command, data, args);
+		data = prepare_exec_last(command, data, args);
 	else
 		execute(data->envp, args, data);
 	free_split(args);

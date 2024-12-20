@@ -48,15 +48,15 @@ static void	process_line(t_list *tokens, t_data *data,
 		if (id == 0)
 		{
 			set_handler_three(&sa);
-			process_tokens(tokens, data);
+			data = process_tokens(tokens, data);
 			ft_lstclear(&tokens, free_token);
 			free_split(data->envp);
-			exit(0);
+			exit(WEXITSTATUS(data->exit_flag));
 		}
 	}
 	set_handler_two(&sa);
 	if (id)
-		waitpid(id, NULL, 0);
+		waitpid(id, &data->exit_flag, 0);
 	ft_lstclear(&tokens, free_token);
 }
 
@@ -71,12 +71,17 @@ static void	process_input(char *line, struct sigaction sa, char *envp[],
 	joined_args = join_args(expanded_args);
 	free_split(expanded_args);
 	tokens = tokenize_input(joined_args, 0, NULL, NULL);
+	tokens = get_last_exit(tokens, tokens, data);
 	data->root_token = tokens;
 	free(joined_args);
+	g_sigint_received = 0;
 	if (tokens && validate_tokens(tokens))
 		process_line(tokens, data, sa);
 	else if (tokens)
+	{
+		data->exit_flag = 2;
 		ft_lstclear(&tokens, free_token);
+	}
 }
 
 static char	**copy_envp(char **envp)
@@ -109,9 +114,9 @@ int	main(int argc, char *argv[], char *envp[])
 	(void)argc;
 	(void)argv;
 	data.envp = copy_envp(envp);
-	data.exit_flag = 0;
 	data.fd = -1;
 	data.ids = NULL;
+	data.exit_flag = 0;
 	while (1)
 	{
 		set_handler_one(&sa);
