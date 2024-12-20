@@ -23,7 +23,8 @@ t_data	*process_tokens(t_list *tokens, t_data *data)
 			handle_token_exec(&tokens, &data);
 		else if (((t_token *)tokens->content)->type == TOKEN_PIPE)
 			handle_token_pipe(&tokens, &data);
-		else if (((t_token *)tokens->content)->type == TOKEN_R_INPUT && handle_token_input(&tokens) == -1)
+		else if (((t_token *)tokens->content)->type == TOKEN_R_INPUT
+			&& handle_token_input(&tokens) == -1)
 		{
 			data->exit_flag = 512;
 			return (data);
@@ -54,7 +55,7 @@ static int	check_first_token(t_token *first_token, t_token *second_token)
 	}
 	if (first_token->type == TOKEN_R_INPUT && second_token->type != TOKEN_TEXT)
 	{
-		ft_errprintf("minishell: %s: No such file or directory\n", //why
+		ft_errprintf("minishell: %s: No such file or directory\n",
 			second_token->value);
 		return (0);
 	}
@@ -75,7 +76,6 @@ static int	check_last_token(t_token *last_token)
 	return (1);
 }
 
-//wtf is this
 int	validate_tokens(t_list *tokens)
 {
 	t_list	*current;
@@ -97,7 +97,6 @@ int	validate_tokens(t_list *tokens)
 	current = tokens;
 	while (current)
 	{
-		//printf("Current token: %s, type: %d\n", ((t_token *)current->content)->value, ((t_token *)current->content)->type);
 		token = (t_token *)current->content;
 		if (token->type == TOKEN_END)
 		{
