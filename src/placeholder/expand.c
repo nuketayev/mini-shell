@@ -21,12 +21,13 @@ static char	*get_env_value(char *var_name, char **envp)
 	i = 0;
 	if (ft_findchar(var_name, '\"') == -1)
 		var_name = remove_quotes(var_name);
+	ft_printf("%s\n", var_name);
 	while (envp[i])
 	{
 		if (ft_strncmp(envp[i], var_name + 1, ft_strlen_until(envp[i],
 					'=')) == 0)
 		{
-			var_value = ft_strdup(envp[i] + ft_strlen(var_name));
+			var_value = ft_strjoin(ft_strdup(envp[i] + ft_strlen_until(envp[i], '=') + 1), var_name + ft_strlen_until(envp[i], '=') + 1, 1);
 			break ;
 		}
 		i++;
