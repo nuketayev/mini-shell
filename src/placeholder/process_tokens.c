@@ -41,12 +41,18 @@ void	process_tokens(t_list *tokens, char *envp[], t_data *data)
 	g_sigint_received = 0;
 }
 
-static int	check_first_token(t_token *first_token)
+static int	check_first_token(t_token *first_token, t_token *second_token)
 {
 	if (first_token->type == TOKEN_PIPE)
 	{
 		ft_errprintf("minishell: syntax error near unexpected token `%s`\n",
 			first_token->value);
+		return (0);
+	}
+	else if (first_token->type == TOKEN_R_INPUT)
+	{
+		ft_errprintf("minishell: %s: No such file or directory\n",
+			second_token->value);
 		return (0);
 	}
 	return (1);
@@ -71,17 +77,21 @@ int	validate_tokens(t_list *tokens)
 	t_list	*current;
 	t_token	*last_token;
 	t_token	*first_token;
+	t_token	*second_token;
 	t_token	*token;
 
 	last_token = NULL;
 	if (!tokens)
 		return (0);
+	
 	first_token = (t_token *)tokens->content;
-	if (!check_first_token(first_token))
+	second_token = (t_token *)tokens->next->content;
+	if (!check_first_token(first_token, second_token))
 		return (0);
 	current = tokens;
 	while (current)
 	{
+		//printf("Current token: %s, type: %d\n", ((t_token *)current->content)->value, ((t_token *)current->content)->type);
 		token = (t_token *)current->content;
 		if (token->type == TOKEN_END)
 		{
