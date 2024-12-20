@@ -32,14 +32,14 @@ char	*remove_quotes(char *var_name)
 	size_t		i;
 	size_t	offset;
 
-	new_str = malloc(ft_strlen(var_name) - count_chars(var_name, '\'') - count_chars(var_name, '\"') + 2 * sizeof(char));
+	new_str = malloc(ft_strlen(var_name) - count_chars(var_name, '\"') + 2 * sizeof(char));
 	if (!new_str)
 		return (NULL);
 	i = 0;
 	offset = i;
 	while (var_name[i])
 	{
-		if (var_name[i] != '\'' && var_name[i] != '\"')
+		if (var_name[i] != '\"')
 		{
 			new_str[i - offset] = var_name[i];
 			i++;
